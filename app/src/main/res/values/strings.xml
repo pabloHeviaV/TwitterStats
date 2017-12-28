@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TwitterStats</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">2wM6G1zTaOvSjNoAZQaP9UbUr</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">4tlSpm7l1s8SHPSrmToPgDZPRJWPxhUonuZ2sTxJUnQJol3QBf</string>
+</resources>
