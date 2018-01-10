@@ -2,4 +2,12 @@
     <string name="app_name">TwitterStats</string>
     <string name="com.twitter.sdk.android.CONSUMER_KEY">2wM6G1zTaOvSjNoAZQaP9UbUr</string>
     <string name="com.twitter.sdk.android.CONSUMER_SECRET">4tlSpm7l1s8SHPSrmToPgDZPRJWPxhUonuZ2sTxJUnQJol3QBf</string>
+    <string name="title_activity_central">CentralActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="contentDescriptionProfilePic">Foto de perfil del usuario</string>
+    <string name="cerrarSesionButton">Cerrar sesión</string>
+    <string name="profileLabel">Perfil</string>
+    <string name="loginLabel">Inicio de sesión</string>
 </resources>
