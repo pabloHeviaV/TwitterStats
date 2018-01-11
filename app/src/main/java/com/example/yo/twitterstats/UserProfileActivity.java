@@ -32,7 +32,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserData(long userID) {
-        new MyTwitterApiClient(session).getCustomService().show(userID)
+        new MyTwitterApiClient(session).getUserCustomService().show(userID)
                 .enqueue(new Callback<User>() {
                     @Override
                     public void success(Result<User> result) {
