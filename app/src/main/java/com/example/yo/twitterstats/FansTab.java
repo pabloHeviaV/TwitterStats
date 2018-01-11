@@ -30,7 +30,5 @@ public class FansTab extends Fragment{
     public void onStart() {
         super.onStart();
 
-        TextView test = (TextView) getActivity().findViewById(R.id.testTXT);
-        test.setText(TwitterCore.getInstance().getSessionManager().getActiveSession().getUserName());
     }
 }
