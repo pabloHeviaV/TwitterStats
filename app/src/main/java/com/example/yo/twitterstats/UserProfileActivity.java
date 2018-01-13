@@ -26,33 +26,26 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         session = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        loadUserData(session.getUserId());
+        loadUserData();
 
     }
 
-    private void loadUserData(long userID) {
-        new MyTwitterApiClient(session).getUserAPICustomService().show(userID)
-                .enqueue(new Callback<User>() {
-                    @Override
-                    public void success(Result<User> result) {
-                        ((TextView) findViewById(R.id.userData)).setText(
-                                        "Name: "            + result.data.name
-                                        +"\nScreen name: "  + result.data.screenName
-                                        +"\nLocation: "     + result.data.location
-                                        +"\nFollowing: "    + result.data.friendsCount
-                                        +"\nFollowers: "    + result.data.followersCount
-
-                        );
-                        Picasso.with(getBaseContext()).load(result.data.profileImageUrl).
-                                resize(250,250)
-                                .into((ImageView)findViewById(R.id.profilePic));
-                    }
-
-                    @Override
-                    public void failure(TwitterException exception) {
-                        Log.e("Failed", exception.toString());
-                    }
-                });
+    private void loadUserData() {
+        twitter4j.User currentUser = GetData.getInstance().getCurrentUserData();
+        ((TextView) findViewById(R.id.userData)).setText(
+                "Name: "            + currentUser.getName()
+                        +"\n"+
+                        "\nScreen name: "  + currentUser.getScreenName()
+                        +"\n"+
+                        "\nLocation: "     + currentUser.getLocation()
+                        +"\n"+
+                        "\nFollowing: "    + currentUser.getFriendsCount()
+                        +"\n"+
+                        "\nFollowers: "    + currentUser.getFollowersCount()
+        );
+        Picasso.with(getBaseContext()).load(currentUser.getBiggerProfileImageURL()).
+                resize(250,250)
+                .into((ImageView)findViewById(R.id.profilePic));
     }
 
     /*
