@@ -10,7 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,11 +21,14 @@
         <activity
             android:name=".CentralActivity"
             android:label="@string/title_activity_central"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity android:name=".LoginActivity"
-            android:label="@string/loginLabel"/>
+            android:label="@string/loginLabel"
+            android:screenOrientation="portrait"/>
         <activity android:name=".UserProfileActivity"
-            android:label="@string/profileLabel"></activity>
+            android:label="@string/profileLabel"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

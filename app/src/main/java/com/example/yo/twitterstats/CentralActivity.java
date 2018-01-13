@@ -63,6 +63,9 @@ public class CentralActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+//        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         registrarReceiver();
     }
@@ -192,6 +195,7 @@ public class CentralActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
+            //this method will be running on UI thread
             pdLoading.setMessage("\tObteniendo datos, podría tardar unos segundos...");
             pdLoading.show();
         }
