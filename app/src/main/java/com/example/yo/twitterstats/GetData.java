@@ -81,33 +81,35 @@ public class GetData
             return false;
         }
         Log.e("Ids followers",String.valueOf(ids.length));
-        try{
-            int i=0;
-            int limit;
-            do{
-                // Corta el array de ids en array de 100 como max
-                limit = (i+99>ids.length)? ids.length: i+99;
-                long[] idsSlice = Arrays.copyOfRange(ids, i, limit);
-                // Se obtienen los datos de los users para los ids
-                ResponseList<User> users = twitter.lookupUsers(idsSlice);
-                for(User u: users) {
-                    TwitterUser twitterUser = new TwitterUser(
-                            u.getId(),
-                            u.getScreenName(),
-                            u.getName(),
-                            u.getMiniProfileImageURL()
-                    );
-                    followersList.add(twitterUser);
-                }
-                i+= 99;
-            }while (limit!=ids.length);
+        if(ids.length>0) {
+            try {
+                int i = 0;
+                int limit;
+                do {
+                    // Corta el array de ids en array de 100 como max
+                    limit = (i + 99 > ids.length) ? ids.length : i + 99;
+                    long[] idsSlice = Arrays.copyOfRange(ids, i, limit);
+                    // Se obtienen los datos de los users para los ids
+                    ResponseList<User> users = twitter.lookupUsers(idsSlice);
+                    for (User u : users) {
+                        TwitterUser twitterUser = new TwitterUser(
+                                u.getId(),
+                                u.getScreenName(),
+                                u.getName(),
+                                u.getMiniProfileImageURL()
+                        );
+                        followersList.add(twitterUser);
+                    }
+                    i += 99;
+                } while (limit != ids.length);
 
-        }catch (TwitterException te){
-            te.printStackTrace();
-            System.out.println("Failed to get followers info: " + te.getMessage());
-            return false;
+            } catch (TwitterException te) {
+                te.printStackTrace();
+                System.out.println("Failed to get followers info: " + te.getMessage());
+                return false;
+            }
+            Log.e("Nº followers", String.valueOf(followersList.size()));
         }
-            Log.e("Nº followers",String.valueOf(followersList.size()));
         return true;
 }
 
@@ -129,33 +131,35 @@ public class GetData
             return false;
         }
         Log.e("Ids following",String.valueOf(ids.length));
-        try{
-            int i=0;
-            int limit;
-            do{
-                // Corta el array de ids en array de 100 como max
-                limit = (i+99>ids.length)? ids.length: i+99;
-                long[] idsSlice = Arrays.copyOfRange(ids, i, limit);
-                // Se obtienen los datos de los usuarios para los ids dados
-                ResponseList<User> users = twitter.lookupUsers(idsSlice);
-                for(User u: users) {
-                    TwitterUser twitterUser = new TwitterUser(
-                            u.getId(),
-                            u.getScreenName(),
-                            u.getName(),
-                            u.getMiniProfileImageURL()
-                    );
-                    followingList.add(twitterUser);
-                }
-                i+= 99;
-            }while (limit!=ids.length);
+        if(ids.length>0) {
+            try {
+                int i = 0;
+                int limit;
+                do {
+                    // Corta el array de ids en array de 100 como max
+                    limit = (i + 99 > ids.length) ? ids.length : i + 99;
+                    long[] idsSlice = Arrays.copyOfRange(ids, i, limit);
+                    // Se obtienen los datos de los usuarios para los ids dados
+                    ResponseList<User> users = twitter.lookupUsers(idsSlice);
+                    for (User u : users) {
+                        TwitterUser twitterUser = new TwitterUser(
+                                u.getId(),
+                                u.getScreenName(),
+                                u.getName(),
+                                u.getMiniProfileImageURL()
+                        );
+                        followingList.add(twitterUser);
+                    }
+                    i += 99;
+                } while (limit != ids.length);
 
-        }catch (TwitterException te){
-            te.printStackTrace();
-            System.out.println("Failed to get following info: " + te.getMessage());
-            return false;
+            } catch (TwitterException te) {
+                te.printStackTrace();
+                System.out.println("Failed to get following info: " + te.getMessage());
+                return false;
+            }
+            Log.e("Nº following", String.valueOf(followingList.size()));
         }
-        Log.e("Nº following",String.valueOf(followingList.size()));
         return true;
     }
 

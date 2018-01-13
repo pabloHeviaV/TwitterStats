@@ -36,7 +36,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private void loadUserData(User currentUser) {
 
         ((TextView) findViewById(R.id.userData)).setText(
-                "Name: "            + currentUser.getName()
+                        "Name: "            + currentUser.getName()
                         +"\n"+
                         "\nScreen name: "  + currentUser.getScreenName()
                         +"\n"+
