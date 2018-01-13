@@ -1,21 +1,21 @@
 package com.example.yo.twitterstats;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.models.User;
+import twitter4j.User;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -33,7 +33,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
-    private void loadUserData(twitter4j.User currentUser) {
+    private void loadUserData(User currentUser) {
 
         ((TextView) findViewById(R.id.userData)).setText(
                 "Name: "            + currentUser.getName()
@@ -69,24 +69,52 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
 
-    private class AsyncCaller extends AsyncTask<Void, Void, twitter4j.User>
+    private class AsyncCaller extends AsyncTask<Void, Void, User>
     {
+        ProgressDialog pdLoading = new ProgressDialog(UserProfileActivity.this);
 
         @Override
-        protected twitter4j.User doInBackground(Void... params) {
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pdLoading.setMessage("\tCargando...");
+            pdLoading.show();
+        }
+
+        @Override
+        protected User doInBackground(Void... params) {
 
             //this method will be running on background thread so don't update UI frome here
             //do your long running http tasks here,you dont want to pass argument and u can access the parent class' variable url over here
             // GetData.getInstance().fetchFollowers();
-            twitter4j.User currentUser = GetData.getInstance().getCurrentUserData();
+            User currentUser = GetData.getInstance().getCurrentUserData();
 
             return currentUser;
         }
 
 
         @Override
-        protected void onPostExecute(twitter4j.User user) {
-            loadUserData(user);
+        protected void onPostExecute(User user) {
+            pdLoading.dismiss();
+            if(user != null)
+                loadUserData(user);
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
+                builder.setTitle("Error al obtener los datos");
+                builder.setMessage("Compruebe su conexión a internet");
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setPositiveButton("Reintentar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        new AsyncCaller().execute();
+                    }
+                });
+                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+                builder.show();
+            }
         }
     }
 

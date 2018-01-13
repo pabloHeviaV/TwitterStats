@@ -1,8 +1,10 @@
 package com.example.yo.twitterstats;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
@@ -15,8 +17,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class CentralActivity extends AppCompatActivity {
 
@@ -34,12 +40,13 @@ public class CentralActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private BroadcastReceiver broadcast_reciever;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //new AsyncCaller().execute();
+        new AsyncCaller().execute();
 
 
         setContentView(R.layout.activity_central);
@@ -56,11 +63,16 @@ public class CentralActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-//        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-//        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        registrarReceiver();
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(broadcast_reciever);
+        super.onDestroy();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,12 +100,20 @@ public class CentralActivity extends AppCompatActivity {
     }
 
     /*
-    Lanza la actividad del perfil y prepara un BroadcastReceiver para que en el
-    caso de que se cierre sesión se le mande un mensaje a la actividad central
-    para que termine.
+    Lanza la actividad del perfil y
      */
     private void lanzarPerfilActivity(){
-        BroadcastReceiver broadcast_reciever = new BroadcastReceiver() {
+        Intent intent= new Intent(this, UserProfileActivity.class);
+        startActivity(intent);
+    }
+
+    /*
+    Prepara un BroadcastReceiver para que en el
+    caso de que se cierre sesión desde el perfil se le mande un mensaje a la actividad central
+    para que termine.
+     */
+    private void registrarReceiver() {
+        broadcast_reciever = new BroadcastReceiver() {
 
             @Override
             public void onReceive(Context arg0, Intent intent) {
@@ -104,10 +124,8 @@ public class CentralActivity extends AppCompatActivity {
             }
         };
         registerReceiver(broadcast_reciever, new IntentFilter("finish_activity"));
-
-        Intent intent= new Intent(this, UserProfileActivity.class);
-        startActivity(intent);
     }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -166,7 +184,7 @@ public class CentralActivity extends AppCompatActivity {
         }
     }
 
-    private class AsyncCaller extends AsyncTask<Void, Void, Void>
+    private class AsyncCaller extends AsyncTask<Void, Void, Boolean>
     {
         ProgressDialog pdLoading = new ProgressDialog(CentralActivity.this);
 
@@ -174,27 +192,36 @@ public class CentralActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            //this method will be running on UI thread
             pdLoading.setMessage("\tObteniendo datos, podría tardar unos segundos...");
             pdLoading.show();
         }
         @Override
-        protected Void doInBackground(Void... params) {
-
-            //this method will be running on background thread so don't update UI frome here
-            //do your long running http tasks here,you dont want to pass argument and u can access the parent class' variable url over here
-           // GetData.getInstance().fetchFollowers();
-            GetData.getInstance().fetchData();
-            return null;
+        protected Boolean doInBackground(Void... params) {
+            return GetData.getInstance().fetchData();
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-
-            //this method will be running on UI thread
-
             pdLoading.dismiss();
+            if(!result) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CentralActivity.this);
+                builder.setTitle("Error al obtener los datos");
+                builder.setMessage("Compruebe su conexión a internet");
+
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setPositiveButton("Reintentar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        new CentralActivity.AsyncCaller().execute();
+                    }
+                });
+                builder.setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+                builder.show();
+            }
         }
 
     }
