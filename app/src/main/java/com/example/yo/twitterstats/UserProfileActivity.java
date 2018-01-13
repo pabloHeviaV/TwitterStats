@@ -84,7 +84,7 @@ public class UserProfileActivity extends AppCompatActivity {
         @Override
         protected User doInBackground(Void... params) {
 
-            //this method will be running on background thread so don't update UI frome here
+            //this method will be running on background thread so don't updateList UI frome here
             //do your long running http tasks here,you dont want to pass argument and u can access the parent class' variable url over here
             // GetData.getInstance().fetchFollowers();
             User currentUser = GetData.getInstance().getCurrentUserData();

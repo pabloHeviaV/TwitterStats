@@ -17,12 +17,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.yo.twitterstats.tabs.FansTab;
+import com.example.yo.twitterstats.tabs.FollowersTab;
+import com.example.yo.twitterstats.tabs.MutualsTab;
+import com.example.yo.twitterstats.tabs.RecentUnfollowersTab;
+import com.example.yo.twitterstats.tabs.UnfollowersTab;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CentralActivity extends AppCompatActivity {
 
@@ -46,9 +51,6 @@ public class CentralActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new AsyncCaller().execute();
-
-
         setContentView(R.layout.activity_central);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -66,6 +68,8 @@ public class CentralActivity extends AppCompatActivity {
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         registrarReceiver();
+
+        new AsyncCaller().execute(false);
     }
 
     @Override
@@ -93,8 +97,8 @@ public class CentralActivity extends AppCompatActivity {
         if (id == R.id.profile_settings) {
             lanzarPerfilActivity();
         }
-        if(id == R.id.refresh_setting){
-            //TODO
+        if (id == R.id.refresh_setting) {
+            new AsyncCaller().execute(true);
         }
 
         return super.onOptionsItemSelected(item);
@@ -103,8 +107,8 @@ public class CentralActivity extends AppCompatActivity {
     /*
     Lanza la actividad del perfil y
      */
-    private void lanzarPerfilActivity(){
-        Intent intent= new Intent(this, UserProfileActivity.class);
+    private void lanzarPerfilActivity() {
+        Intent intent = new Intent(this, UserProfileActivity.class);
         startActivity(intent);
     }
 
@@ -134,28 +138,34 @@ public class CentralActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        FansTab fansTab;
+        FollowersTab followersTab;
+        MutualsTab mutualsTab;
+        RecentUnfollowersTab recentUnfollowersTab;
+        UnfollowersTab unfollowersTab;
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            fansTab = new FansTab();
+            followersTab = new FollowersTab();
+            mutualsTab = new MutualsTab();
+            recentUnfollowersTab = new RecentUnfollowersTab();
+            unfollowersTab = new UnfollowersTab();
         }
 
         @Override
         public Fragment getItem(int position) {
-            switch (position){
+            switch (position) {
                 case 0:
-                    FansTab tab1 = new FansTab();
-                    return tab1;
+                    return fansTab;
                 case 1:
-                    FollowersTab tab2 = new FollowersTab();
-                    return tab2;
+                    return followersTab;
                 case 2:
-                    MutualsTab tab3 = new MutualsTab();
-                    return tab3;
+                    return mutualsTab;
                 case 3:
-                    RecentUnfollowersTab tab4 = new RecentUnfollowersTab();
-                    return tab4;
+                    return recentUnfollowersTab;
                 case 4:
-                    UnfollowersTab tab5 = new UnfollowersTab();
-                    return tab5;
+                    return unfollowersTab;
                 default:
                     return null;
             }
@@ -169,7 +179,7 @@ public class CentralActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position){
+            switch (position) {
                 case 0:
                     return "Fans";
                 case 1:
@@ -183,10 +193,24 @@ public class CentralActivity extends AppCompatActivity {
             }
             return null;
         }
+
+        public void updateFirstsFragments(){
+            fansTab.updateList();
+            followersTab.updateList();
+
+        }
+
+        public void updateAllFragments(){
+            fansTab.updateList();
+            followersTab.updateList();
+            mutualsTab.updateList();
+            //TODO
+//            recentUnfollowersTab;
+            unfollowersTab.updateList();
+        }
     }
 
-    private class AsyncCaller extends AsyncTask<Void, Void, Boolean>
-    {
+    private class AsyncCaller extends AsyncTask<Boolean, Void, Map<String, Boolean>> {
         ProgressDialog pdLoading = new ProgressDialog(CentralActivity.this);
 
         @Override
@@ -194,19 +218,24 @@ public class CentralActivity extends AppCompatActivity {
             super.onPreExecute();
 
             //this method will be running on UI thread
-            pdLoading.setMessage("\tObteniendo datos, podría tardar unos segundos...");
+            pdLoading.setMessage("Obteniendo datos, podría tardar unos segundos...");
             pdLoading.show();
-        }
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            return GetData.getInstance().fetchData();
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
+        protected Map<String, Boolean> doInBackground(Boolean... refresh) {
+            Map<String, Boolean> flags = new HashMap<>();
+            boolean result = GetData.getInstance().fetchData();
+            flags.put("result",result);
+            flags.put("refresh",refresh[0]);
+            return flags;
+        }
+
+        @Override
+        protected void onPostExecute(Map<String, Boolean> flags) {
+            super.onPostExecute(flags);
             pdLoading.dismiss();
-            if(!result) {
+            if (!flags.get("result")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CentralActivity.this);
                 builder.setTitle("Error al obtener los datos");
                 builder.setMessage("Compruebe su conexión a internet");
@@ -223,9 +252,17 @@ public class CentralActivity extends AppCompatActivity {
                     }
                 });
                 builder.show();
+            } else {
+                GetData.getInstance().calculateLists();
+                if(flags.get("refresh"))
+                    mSectionsPagerAdapter.updateAllFragments();
+                else
+                    mSectionsPagerAdapter.updateFirstsFragments();
+
             }
         }
 
     }
 }
+
 

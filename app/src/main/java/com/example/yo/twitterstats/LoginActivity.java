@@ -36,7 +36,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                Log.d(TAG, "twitterLogin:success" + result);
                 session = TwitterCore.getInstance().getSessionManager().getActiveSession();
                 authToken = session.getAuthToken();
 

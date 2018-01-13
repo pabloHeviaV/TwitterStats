@@ -1,4 +1,4 @@
-package com.example.yo.twitterstats;
+package com.example.yo.twitterstats.tabs;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -7,6 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.example.yo.twitterstats.AdaptadorListas;
+import com.example.yo.twitterstats.GetData;
+import com.example.yo.twitterstats.R;
+import com.example.yo.twitterstats.TwitterUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +22,7 @@ import java.util.List;
 
 public class FollowersTab extends Fragment {
 
-    private AdaptadorListas al;
+    private AdaptadorListas adaptadorListasFollowers;
     private ListView lista;
     private GetData gd;
     private View rootView;
@@ -27,12 +32,19 @@ public class FollowersTab extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.tab_followers, container, false);
         gd = GetData.getInstance();
-        Log.e("HOlo", "He pasado por aqui followers");
-        List<TwitterUser> fans = new ArrayList<TwitterUser>();
 
-        al= new AdaptadorListas(this.getActivity(),gd.getFollowers());
+//        List<TwitterUser> fans = new ArrayList<TwitterUser>();
+
+        adaptadorListasFollowers = new AdaptadorListas(this.getActivity(),gd.getFollowers());
+        Log.e("Followers", "Adapter followers creado");
         lista = (ListView) rootView.findViewById(R.id.followers);
-        lista.setAdapter(al);
+        lista.setAdapter(adaptadorListasFollowers);
         return rootView;
+    }
+
+    public void updateList(){
+        adaptadorListasFollowers.clear();
+        adaptadorListasFollowers.addAll(gd.getFollowers());
+        adaptadorListasFollowers.notifyDataSetChanged();
     }
 }

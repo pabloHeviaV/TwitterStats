@@ -17,6 +17,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import twitter4j.IDs;
@@ -35,12 +36,16 @@ public class GetData
 {
     // Singleton
     private static final GetData ourInstance = new GetData();
-    static GetData getInstance() {
+    public static GetData getInstance() {
         return ourInstance;
     }
 
     private List<TwitterUser> followersList;
     private List<TwitterUser> followingList;
+
+    private List<TwitterUser> fansList;
+    private List<TwitterUser> mutualsList;
+    private List<TwitterUser> notFollowingYouList;
 
     private TwitterSession  session;
     private  Twitter twitter;
@@ -49,6 +54,9 @@ public class GetData
         session = TwitterCore.getInstance().getSessionManager().getActiveSession();
         followersList = new ArrayList<>();
         followingList = new ArrayList<>();
+        fansList= new ArrayList<>();
+        mutualsList= new ArrayList<>();
+        notFollowingYouList= new ArrayList<>();
 
         // Claves de autenticación para usar twitter4j
         ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -68,7 +76,7 @@ public class GetData
     Devuelve false si no es posible obtener los datos.
      */
     private boolean fetchFollowers() {
-
+        followersList = new ArrayList<>();
         long[] ids = null;
         try {
             //Se obtienen los ids de los followers
@@ -81,6 +89,7 @@ public class GetData
             return false;
         }
         Log.e("Ids followers",String.valueOf(ids.length));
+
         if(ids.length>0) {
             try {
                 int i = 0;
@@ -90,17 +99,20 @@ public class GetData
                     limit = (i + 99 > ids.length) ? ids.length : i + 99;
                     long[] idsSlice = Arrays.copyOfRange(ids, i, limit);
                     // Se obtienen los datos de los users para los ids
+                    Log.e("Ids followers slice",String.valueOf(idsSlice.length));
+                    Log.e("i",String.valueOf(i));
+                    Log.e("limit",String.valueOf(limit));
                     ResponseList<User> users = twitter.lookupUsers(idsSlice);
                     for (User u : users) {
                         TwitterUser twitterUser = new TwitterUser(
                                 u.getId(),
                                 u.getScreenName(),
                                 u.getName(),
-                                u.getMiniProfileImageURL()
+                                u.getOriginalProfileImageURL()
                         );
                         followersList.add(twitterUser);
                     }
-                    i += 99;
+                    i += 100;
                 } while (limit != ids.length);
 
             } catch (TwitterException te) {
@@ -119,6 +131,7 @@ public class GetData
     Devuelve false si no es posible obtener los datos.
      */
     private boolean fetchFollowing(){
+        followingList = new ArrayList<>();
         long[] ids = null;
         try {
             //Se obtienen los ids de los followers
@@ -131,6 +144,7 @@ public class GetData
             return false;
         }
         Log.e("Ids following",String.valueOf(ids.length));
+
         if(ids.length>0) {
             try {
                 int i = 0;
@@ -139,6 +153,10 @@ public class GetData
                     // Corta el array de ids en array de 100 como max
                     limit = (i + 99 > ids.length) ? ids.length : i + 99;
                     long[] idsSlice = Arrays.copyOfRange(ids, i, limit);
+                    Log.e("Ids following slice",String.valueOf(idsSlice.length));
+                    Log.e("i",String.valueOf(i));
+                    Log.e("limit",String.valueOf(limit));
+
                     // Se obtienen los datos de los usuarios para los ids dados
                     ResponseList<User> users = twitter.lookupUsers(idsSlice);
                     for (User u : users) {
@@ -146,12 +164,12 @@ public class GetData
                                 u.getId(),
                                 u.getScreenName(),
                                 u.getName(),
-                                u.getMiniProfileImageURL()
+                                u.getOriginalProfileImageURL()
                         );
                         followingList.add(twitterUser);
                     }
-                    i += 99;
-                } while (limit != ids.length);
+                    i += 100;
+                } while (limit < ids.length);
 
             } catch (TwitterException te) {
                 te.printStackTrace();
@@ -183,13 +201,44 @@ public class GetData
     Si no es posible obtener los datos, devuelve false.
      */
     public boolean fetchData(){
-        return fetchFollowing() && fetchFollowers();
+        boolean result = fetchFollowing() && fetchFollowers();
+      //  if(result) calculateLists();
+        return result;
     }
 
-    public List<TwitterUser> getFollowers(){ return followersList; }
+    public List<TwitterUser> getFollowers(){ return new ArrayList<>(followersList); }
 
     public List<TwitterUser> getFollowing() {
-        return followingList;
+        return new ArrayList<>(followingList);
+    }
+
+    public void calculateLists(){
+        // Followers - Following
+        Log.e("Followers antes", String.valueOf(getFollowers().size()));
+        fansList = getFollowers();
+        fansList.removeAll(getFollowing());
+        Log.e("Fans list", String.valueOf(fansList.size()));
+        Log.e("Followers despues", String.valueOf(getFollowers().size()));
+        // Following - Followers
+        notFollowingYouList = getFollowing();
+        notFollowingYouList.removeAll(getFollowers());
+        Log.e("NotF list", String.valueOf(notFollowingYouList.size()));
+        //Followers ∪ Following
+        mutualsList = getFollowing();
+        mutualsList.retainAll(new HashSet<TwitterUser>(getFollowers()));
+        Log.e("Mutuals list", String.valueOf(mutualsList.size()));
+    }
+
+    public List<TwitterUser> getFansList() {
+        return fansList;
+    }
+
+    public List<TwitterUser> getMutualsList() {
+        return mutualsList;
+    }
+
+    public List<TwitterUser> getNotFollowingYouList() {
+        return notFollowingYouList;
     }
 }
 

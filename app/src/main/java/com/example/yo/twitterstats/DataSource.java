@@ -17,7 +17,7 @@ public class DataSource {
     /**
      * Referencia para manejar la base de datos. Este objeto lo obtenemos a partir de MyDBHelper
      * y nos proporciona metodos para hacer operaciones
-     * CRUD (create, read, update and delete)
+     * CRUD (create, read, updateList and delete)
      */
     private SQLiteDatabase database;
     /**
