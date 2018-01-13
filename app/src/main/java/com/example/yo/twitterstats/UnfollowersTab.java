@@ -11,9 +11,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.twitter.sdk.android.core.TwitterCore;
 
 
 public class UnfollowersTab extends Fragment{

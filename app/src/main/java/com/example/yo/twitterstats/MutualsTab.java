@@ -25,7 +25,9 @@ public class MutualsTab extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab_mutuals, container, false);
+        gd= GetData.getInstance();
         List<TwitterUser> mutuals = new ArrayList<TwitterUser>();
+
         for(TwitterUser tu: gd.getFollowers()){
             if(isMutual(tu)){
                 mutuals.add(tu);
@@ -33,7 +35,7 @@ public class MutualsTab extends Fragment{
         }
 
         al= new AdaptadorListas(this.getActivity(),mutuals);
-        lista = (ListView) rootView.findViewById(R.id.fans);
+        lista = (ListView) rootView.findViewById(R.id.mutuals);
         lista.setAdapter(al);
         return rootView;
     }
