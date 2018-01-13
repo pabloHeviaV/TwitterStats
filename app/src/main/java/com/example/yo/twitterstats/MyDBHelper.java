@@ -23,23 +23,25 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_SCREENAME = "screename";
     public static final String COLUMN_PROFILE_PIC_URL = "profilePicUrl";
-    public static final String COLUMN_FOLLOWING = "following";
+    public static final String COLUMN_NAME = "name";
 
 
 
     /**
      * Script para crear la base datos
      */
-    private static final String DATABASE_CREATE = "create table " + TABLE_FOLLOWING
-            + "( " + COLUMN_ID + " " +
-            "bigint primary key, " + COLUMN_SCREENAME
-            + " text not null, " + COLUMN_PROFILE_PIC_URL + " text not null, " + COLUMN_FOLLOWING +
-            " boolean not null" + "); " +
+    private static final String DATABASE_CREATE =
+            "create table " + TABLE_FOLLOWING
+            + "( " + COLUMN_ID + " " + "bigint primary key, "
+            + COLUMN_SCREENAME + " text not null, "
+            + COLUMN_NAME + " text not null, "
+            + COLUMN_PROFILE_PIC_URL+ " text not null" + "); " +
+
             "create table " + TABLE_FOLLOWERS
-            + "( " + COLUMN_ID + " " +
-            "bigint primary key, " + COLUMN_SCREENAME
-            + " text not null, " + COLUMN_PROFILE_PIC_URL + " text not null, " + COLUMN_FOLLOWING +
-            " boolean not null" + "); ";
+            + "( " + COLUMN_ID + " " + "bigint primary key, "
+            + COLUMN_SCREENAME  + " text not null, "
+            + COLUMN_NAME + " text not null, "
+            + COLUMN_PROFILE_PIC_URL +  " text not null" + "); ";
 
     /**
      * Script para borrar la base de datos

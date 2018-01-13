@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
@@ -32,7 +31,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserData(long userID) {
-        new MyTwitterApiClient(session).getUserCustomService().show(userID)
+        new MyTwitterApiClient(session).getUserAPICustomService().show(userID)
                 .enqueue(new Callback<User>() {
                     @Override
                     public void success(Result<User> result) {

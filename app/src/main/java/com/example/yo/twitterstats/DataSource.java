@@ -28,7 +28,7 @@ public class DataSource {
      * Columnas de la tabla
      */
     private final String[] allColumns = { MyDBHelper.COLUMN_ID, MyDBHelper.COLUMN_SCREENAME,
-            MyDBHelper.COLUMN_PROFILE_PIC_URL, MyDBHelper.COLUMN_FOLLOWING };
+            MyDBHelper.COLUMN_PROFILE_PIC_URL, MyDBHelper.COLUMN_NAME};
     /**
      * Constructor.
      *
@@ -62,9 +62,9 @@ public class DataSource {
         // Establecemos los valores que se insertaran
         ContentValues values = new ContentValues();
         values.put(MyDBHelper.COLUMN_ID, userToInsert.getUserId());
-        values.put(MyDBHelper.COLUMN_FOLLOWING, userToInsert.isFollowing());
+        values.put(MyDBHelper.COLUMN_SCREENAME,userToInsert.getScreenName());
+        values.put(MyDBHelper.COLUMN_NAME, userToInsert.getName());
         values.put(MyDBHelper.COLUMN_PROFILE_PIC_URL, userToInsert.getProfilePicURL());
-        values.put(MyDBHelper.COLUMN_SCREENAME,userToInsert.getScreename());
 
         // Insertamos la valoracion
         long insertId = database.insert(table, null, values);
@@ -73,11 +73,11 @@ public class DataSource {
     }
 
     /**
-     * Obtiene todas las valoraciones andadidas por los usuarios.
+     * Obtiene todos los usuarios.
      *
-     * @return Lista de objetos de tipo Valoration
+     * @return Lista de objetos de tipo TwitterUser
      */
-    public List<TwitterUser> getAllValorations(String table) {
+    public List<TwitterUser> getAllUsers(String table) {
         // Lista que almacenara el resultado
         List<TwitterUser> twitterUserList = new ArrayList<TwitterUser>();
         //hacemos una query porque queremos devolver un cursor
@@ -85,10 +85,7 @@ public class DataSource {
                 null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            final TwitterUser user = new TwitterUser(cursor.getLong(1),cursor.getString(2),cursor.getString(3),Boolean.getBoolean(cursor.getString(4)));
-            /*valoration.setCourse(cursor.getString(1));
-            valoration.setComment(cursor.getString(2));
-            valoration.setRating(cursor.getInt(3));*/
+            final TwitterUser user = new TwitterUser(cursor.getLong(1),cursor.getString(2),cursor.getString(3),cursor.getString(4));
 
             twitterUserList.add(user);
             cursor.moveToNext();
