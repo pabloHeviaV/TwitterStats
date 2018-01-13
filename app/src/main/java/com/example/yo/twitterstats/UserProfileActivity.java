@@ -1,6 +1,7 @@
 package com.example.yo.twitterstats;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,12 +27,14 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         session = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        loadUserData();
+        //loadUserData();
+
+        new AsyncCaller().execute();
 
     }
 
-    private void loadUserData() {
-        twitter4j.User currentUser = GetData.getInstance().getCurrentUserData();
+    private void loadUserData(twitter4j.User currentUser) {
+
         ((TextView) findViewById(R.id.userData)).setText(
                 "Name: "            + currentUser.getName()
                         +"\n"+
@@ -64,4 +67,27 @@ public class UserProfileActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
+    private class AsyncCaller extends AsyncTask<Void, Void, twitter4j.User>
+    {
+
+        @Override
+        protected twitter4j.User doInBackground(Void... params) {
+
+            //this method will be running on background thread so don't update UI frome here
+            //do your long running http tasks here,you dont want to pass argument and u can access the parent class' variable url over here
+            // GetData.getInstance().fetchFollowers();
+            twitter4j.User currentUser = GetData.getInstance().getCurrentUserData();
+
+            return currentUser;
+        }
+
+
+        @Override
+        protected void onPostExecute(twitter4j.User user) {
+            loadUserData(user);
+        }
+    }
+
 }

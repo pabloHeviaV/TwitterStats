@@ -1,6 +1,9 @@
 package com.example.yo.twitterstats;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +50,18 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void failure(TwitterException exception) {
                 Log.w(TAG, "twitterLogin:failure", exception);
+                Log.e("twitterLogin:failure", exception.getMessage());
+
+                if(exception.getMessage().equals("Failed to get request token")) {
+                    Context context = getApplicationContext();
+                    CharSequence text = "Tienes que tener descargada la app de Twitter";
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
+
+
+
             }
         });
     }
@@ -58,4 +73,5 @@ public class LoginActivity extends AppCompatActivity {
         // Pass the activity result to the Twitter login button.
         loginButton.onActivityResult(requestCode, resultCode, data);
     }
+
 }

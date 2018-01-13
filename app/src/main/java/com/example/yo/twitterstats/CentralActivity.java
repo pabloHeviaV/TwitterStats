@@ -39,7 +39,7 @@ public class CentralActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new AsyncCaller().execute();
+        //new AsyncCaller().execute();
 
 
         setContentView(R.layout.activity_central);
