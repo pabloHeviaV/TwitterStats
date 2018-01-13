@@ -159,6 +159,16 @@ public class GetData
 
     }
 
+    public User getCurrentUserData(){
+        try {
+           return twitter.showUser(session.getUserName());
+        } catch (TwitterException te) {
+            te.printStackTrace();
+            System.out.println("Failed to get user info: " + te.getMessage());
+        }
+        return null;
+    }
+
     public void fetchData(){
         fetchFollowing();
         fetchFollowers();
