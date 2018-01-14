@@ -1,4 +1,4 @@
-package com.example.yo.twitterstats;
+package com.example.yo.twitterstats.util;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -8,12 +8,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.yo.twitterstats.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 /**
- * Created by Ivan on 13/01/2018.
+ * Clase que extiende de {@link ArrayAdapter} y sirve para configurar los elementos
+ * de los ListView de las pestañas.
  */
 
 public class AdaptadorListas extends ArrayAdapter<TwitterUser> {
@@ -28,6 +30,15 @@ public class AdaptadorListas extends ArrayAdapter<TwitterUser> {
         this.lista=lista;
     }
 
+    /**
+     * Configura los elementos de los ListView para que muestren el
+     * nombre, el screen name y la foto de perfil de los usuarios.
+     *
+     * @param posicion
+     * @param view
+     * @param parent
+     * @return
+     */
     public View getView(int posicion, View view, ViewGroup parent){
 
         LayoutInflater inflater=context.getLayoutInflater();

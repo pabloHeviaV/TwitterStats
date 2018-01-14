@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 
 import com.example.yo.twitterstats.R;
 
-
+/**
+ * Fragment que almacena los usuarios que te han dado unfollow recientemente.
+ */
 public class RecentUnfollowersTab extends Fragment{
 
     @Override

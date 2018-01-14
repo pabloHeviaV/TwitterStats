@@ -1,11 +1,5 @@
 package com.example.yo.twitterstats.tabs;
 
-
-
-/**
- * Created by yo on 09/01/2018.
- */
-
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,45 +8,62 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.example.yo.twitterstats.AdaptadorListas;
-import com.example.yo.twitterstats.GetData;
+import com.example.yo.twitterstats.util.AdaptadorListas;
+import com.example.yo.twitterstats.util.GetData;
 import com.example.yo.twitterstats.R;
-import com.example.yo.twitterstats.TwitterUser;
 
-import java.util.List;
-
-
+/**
+ * Fragment que almacena tus fans, es decir, gente que te sigue
+ * y tú no les sigues.
+ */
 public class FansTab extends Fragment{
 
-    private static AdaptadorListas adaptadorListasFans;
+    private AdaptadorListas adaptadorListas;
     private ListView lista;
     private GetData gd;
     private View rootView;
+
+    /**
+     * Crea el adapter y la lista y los enlaza.
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.tab_fans, container, false);
         gd = GetData.getInstance();
 
-
-
-        List<TwitterUser> fansList = gd.getFansList();
-//        fansList.removeAll(gd.getFollowing());
-        Log.e("fanslist",fansList.toString());
-        adaptadorListasFans = new AdaptadorListas(this.getActivity(),fansList);
+        adaptadorListas = new AdaptadorListas(this.getActivity(),gd.getFansList());
         Log.e("Fans", "Adapter fans creado");
         lista = (ListView) rootView.findViewById(R.id.fans);
-        lista.setAdapter(adaptadorListasFans);
+        lista.setAdapter(adaptadorListas);
         return rootView;
     }
 
+    /**
+     * Recarga la lista.
+     */
     public void updateList(){
-        adaptadorListasFans.clear();
-        adaptadorListasFans.addAll(gd.getFansList());
-        adaptadorListasFans.notifyDataSetChanged();
+        if(adaptadorListas!=null){
+            adaptadorListas.clear();
+            adaptadorListas.addAll(gd.getFansList());
+            adaptadorListas.notifyDataSetChanged();
+        }
+
     }
 
-    public static AdaptadorListas getAdaptadorListasFans() {
-        return adaptadorListasFans;
+    /**
+     * Elimina todos los objetos de la lista.
+     */
+    public void clearList(){
+        if(adaptadorListas!=null){
+            adaptadorListas.clear();
+            adaptadorListas.notifyDataSetChanged();
+        }
     }
+
 }

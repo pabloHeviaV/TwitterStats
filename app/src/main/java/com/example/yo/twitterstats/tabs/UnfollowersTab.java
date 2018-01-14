@@ -14,18 +14,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.example.yo.twitterstats.AdaptadorListas;
-import com.example.yo.twitterstats.GetData;
+import com.example.yo.twitterstats.util.AdaptadorListas;
+import com.example.yo.twitterstats.util.GetData;
 import com.example.yo.twitterstats.R;
 
-
+/**
+ * Fragment que almacena tus No seguidores, es decir, gente que tú sigues
+ * pero no te siguen a ti.
+ */
 public class UnfollowersTab extends Fragment{
 
-    private AdaptadorListas adaptadorListasNotFollowingYou;
+    private AdaptadorListas adaptadorListas;
     private ListView lista;
     private GetData gd;
     private View rootView;
 
+    /**
+     * Crea el adapter y la lista y los enlaza.
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,16 +44,32 @@ public class UnfollowersTab extends Fragment{
 
         gd= GetData.getInstance();
 
-        adaptadorListasNotFollowingYou = new AdaptadorListas(this.getActivity(),gd.getNotFollowingYouList());
+        adaptadorListas = new AdaptadorListas(this.getActivity(),gd.getNotFollowingYouList());
         Log.e("Unfollowers", "Adapter unfollowers creado");
         lista = (ListView) rootView.findViewById(R.id.notFollowingYouList);
-        lista.setAdapter(adaptadorListasNotFollowingYou);
+        lista.setAdapter(adaptadorListas);
         return rootView;
     }
 
+    /**
+     * Recarga la lista.
+     */
    public void updateList(){
-        adaptadorListasNotFollowingYou.clear();
-        adaptadorListasNotFollowingYou.addAll(gd.getNotFollowingYouList());
-        adaptadorListasNotFollowingYou.notifyDataSetChanged();
+        if(adaptadorListas!=null){
+            adaptadorListas.clear();
+            adaptadorListas.addAll(gd.getNotFollowingYouList());
+            adaptadorListas.notifyDataSetChanged();
+        }
+
    }
+
+    /**
+     * Elimina todos los objetos de la lista.
+     */
+    public void clearList(){
+       if(adaptadorListas!=null){
+            adaptadorListas.clear();
+            adaptadorListas.notifyDataSetChanged();
+        }
+    }
 }

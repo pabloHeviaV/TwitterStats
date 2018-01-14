@@ -1,9 +1,10 @@
-package com.example.yo.twitterstats;
+package com.example.yo.twitterstats.util;
 
 /**
- * Created by Ivan on 11/01/2018.
+ * Clase que modela usuarios de Twitter con únicamente
+ * los datos que son necesarios: su id, su screen name, su nombre
+ * y la URL de su foto de perfil.
  */
-
 public class TwitterUser {
 
     private Long userId;
@@ -32,6 +33,12 @@ public class TwitterUser {
 
     public String getName() { return name;    }
 
+    /**
+     * Comprueba si dos objetos TwitterUser son iguales, esto es,
+     * si tienen el mismo userId.
+     * @param o el TwitterUser a comparar.
+     * @return true si son iguales, false si son distintos
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

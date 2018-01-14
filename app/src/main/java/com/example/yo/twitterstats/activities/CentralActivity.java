@@ -1,4 +1,4 @@
-package com.example.yo.twitterstats;
+package com.example.yo.twitterstats.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -20,33 +20,51 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.yo.twitterstats.R;
 import com.example.yo.twitterstats.tabs.FansTab;
 import com.example.yo.twitterstats.tabs.FollowersTab;
 import com.example.yo.twitterstats.tabs.MutualsTab;
 import com.example.yo.twitterstats.tabs.RecentUnfollowersTab;
 import com.example.yo.twitterstats.tabs.UnfollowersTab;
+import com.example.yo.twitterstats.util.GetData;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Activity principal de la app que tiene todas las pestañas
+ * con las distintas listas de usuarios dependiendo de la pestaña.
+ */
 public class CentralActivity extends AppCompatActivity {
 
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     * El {@link android.support.v4.view.PagerAdapter}que proporcionará
+     * fragments para cada una de las secciones. Se usa un derivado de
+     * {@link FragmentPagerAdapter}, que mantendrá cada fragment
+     * cargado en memoria.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
-     * The {@link ViewPager} that will host the section contents.
+     * El {@link ViewPager} que albergará los contenidos de las secciones.
      */
     private ViewPager mViewPager;
+
+    /**
+     * Un {@link BroadcastReceiver} que se encargará de recibir el mensaje
+     * de finalizar esta Activity que se lanza cuando se cierra sesión desde
+     * {@link UserProfileActivity}
+     */
     private BroadcastReceiver broadcast_reciever;
 
+    /**
+     * Crea los elementos necesarios para lanzar la activity,
+     * registra el BroadcastReceiver y se encarga de llamar
+     * al método que obtendrá los datos necesarios para llenar
+     * las listas de pestañas.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,13 +90,24 @@ public class CentralActivity extends AppCompatActivity {
         new AsyncCaller().execute(false);
     }
 
+    /**
+     * Se encargar de que se cancele el registro del {@link BroadcastReceiver}
+     * antes de que se finalice la activity.
+     */
     @Override
     protected void onDestroy() {
         unregisterReceiver(broadcast_reciever);
+        mSectionsPagerAdapter.clearAllFragments();
         super.onDestroy();
 
     }
 
+    /**
+     * Añade los items al menú.
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -86,14 +115,20 @@ public class CentralActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Maneja lo que ocurre al presionar los botones del menú.
+     * Al presionar el perfil, se lanza la activity del
+     * perfil({@link UserProfileActivity}.
+     * Al presionar sobre el botón de actualizar, se llama a la
+     * tarea asíncrona que obtiene los datos de las listas de usuarios.
+     *
+     * @param item el item del menú seleccionado
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.profile_settings) {
             lanzarPerfilActivity();
         }
@@ -104,18 +139,18 @@ public class CentralActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*
-    Lanza la actividad del perfil y
+    /**
+     * Lanza la actividad del perfil de usuario {@link UserProfileActivity}
      */
     private void lanzarPerfilActivity() {
         Intent intent = new Intent(this, UserProfileActivity.class);
         startActivity(intent);
     }
 
-    /*
-    Prepara un BroadcastReceiver para que en el
-    caso de que se cierre sesión desde el perfil se le mande un mensaje a la actividad central
-    para que termine.
+    /**
+     * Prepara un BroadcastReceiver para que en el
+     * caso de que se cierre sesión desde el perfil se le mande un mensaje a la actividad central
+     * para que termine.
      */
     private void registrarReceiver() {
         broadcast_reciever = new BroadcastReceiver() {
@@ -133,8 +168,8 @@ public class CentralActivity extends AppCompatActivity {
 
 
     /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
+     * Un {@link FragmentPagerAdapter} que devuelve un fragment correspondiente
+     * a una de las pestañas.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -171,87 +206,150 @@ public class CentralActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Devuelve el número de pestañas.
+         *
+         * @return int el número de pestañas
+         */
         @Override
         public int getCount() {
             // Show 5 total pages.
             return 5;
         }
 
+        /**
+         * Devuelve el título para la pestaña de la posición seleccionada.
+         *
+         * @param position int la posición de la pestaña
+         * @return CharSequence el título de la pestaña
+         */
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Fans";
+                    return getString(R.string.fansTabTitle);
                 case 1:
-                    return "Followers";
+                    return getString(R.string.followersTabTitle);
                 case 2:
-                    return "Mutuals";
+                    return getString(R.string.mutualsTabTitle);
                 case 3:
-                    return "Recent Unfollowers";
+                    return getString(R.string.recentUnfollowersTabTitle);
                 case 4:
-                    return "Unfollowers";
+                    return getString(R.string.unfollowersTabTitle);
             }
             return null;
         }
 
+        /**
+         * Actualiza las listas de las primeras dos pestañas que se
+         * cargan antes de obtener los datos de los usuarios en la
+         * llamada asíncrona.
+         */
         public void updateFirstsFragments(){
             fansTab.updateList();
             followersTab.updateList();
 
         }
 
+        /**
+         * Actualiza la lista de todas las pestañas.
+         */
         public void updateAllFragments(){
             fansTab.updateList();
             followersTab.updateList();
             mutualsTab.updateList();
             //TODO
-//            recentUnfollowersTab;
+            //recentUnfollowersTab;
             unfollowersTab.updateList();
         }
+
+        /**
+         * Actualiza la lista de todas las pestañas.
+         */
+        public void clearAllFragments(){
+            fansTab.clearList();
+            followersTab.clearList();
+            mutualsTab.clearList();
+            //TODO
+            //recentUnfollowersTab;
+            unfollowersTab.clearList();
+        }
+
+
     }
 
+    /**
+     * Ejecuta una llamada asíncrona a la API de Twitter para obtener la lista de
+     * seguidores y seguidos.
+     */
     private class AsyncCaller extends AsyncTask<Boolean, Void, Map<String, Boolean>> {
         ProgressDialog pdLoading = new ProgressDialog(CentralActivity.this);
 
+        /**
+         * Muestra un {@link ProgressDialog} mientras se ejecuta la llamada.
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            //this method will be running on UI thread
-            pdLoading.setMessage("Obteniendo datos, podría tardar unos segundos...");
+            pdLoading.setMessage(getString(R.string.centralAsyncLoadingMessage));
             pdLoading.show();
         }
 
+        /**
+         * Ejecuta la llamada a la API de Twitter para obtener las listas de
+         * seguidores y seguidos del User
+         * y coloca los flags necesarios para el postExecute.
+         *
+         * @param refresh controla si la llamada viene de presionar el botón de
+         *                actualizar o de iniciar la app
+         * @return un map<String,Boolean> con dos pares de claves:
+         *  -"result": indica si ha habido algún error en la obtención de datos
+         *  -"refresh": indica si la llamada viene del botón de actualizar
+         *              o de iniciar la app
+         */
         @Override
         protected Map<String, Boolean> doInBackground(Boolean... refresh) {
             Map<String, Boolean> flags = new HashMap<>();
             boolean result = GetData.getInstance().fetchData();
+
             flags.put("result",result);
             flags.put("refresh",refresh[0]);
             return flags;
         }
 
+        /**
+         * Si ha habido un error en la obtención de datos de la API, muestra
+         * un cuadro de diálogo en el que es posible volver a iniciar la
+         * llamada o salir de la aplicación.
+         * Si se han obtenido los datos, comprueba de dónde viene la llamada
+         * y actualiza la lista de las pestañas necesarias.
+         *
+         * @param flags un map con los flags necesarios
+         */
         @Override
         protected void onPostExecute(Map<String, Boolean> flags) {
             super.onPostExecute(flags);
             pdLoading.dismiss();
+
             if (!flags.get("result")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CentralActivity.this);
-                builder.setTitle("Error al obtener los datos");
-                builder.setMessage("Compruebe su conexión a internet");
+                builder.setTitle(R.string.errorObtainDataMessageTitle);
+                builder.setMessage(R.string.errorMsgCheckInternet);
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setPositiveButton("Reintentar", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         new CentralActivity.AsyncCaller().execute();
                     }
                 });
-                builder.setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
                 });
                 builder.show();
+
             } else {
                 GetData.getInstance().calculateLists();
                 if(flags.get("refresh"))

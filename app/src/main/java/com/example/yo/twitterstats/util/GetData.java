@@ -1,14 +1,6 @@
-package com.example.yo.twitterstats;
+package com.example.yo.twitterstats.util;
 
 import android.util.Log;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-
 
 
 import com.twitter.sdk.android.core.TwitterCore;
@@ -30,6 +22,10 @@ import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Created by Pablo on 11/01/2018.
+ * Clase que ejecuta las querys pertinentes a la API REST de Twitter para
+ * obtener las listas de usuarios necesarias en las distintas pestañas de
+ * CentralActivity, así como los datos del usuario conectado necesarios
+ * en su perfil.
  */
 
 public class GetData
@@ -40,16 +36,41 @@ public class GetData
         return ourInstance;
     }
 
+    /**
+     * Lista de usuarios que siguen al User.
+     */
     private List<TwitterUser> followersList;
+
+    /**
+     * Lista de usuarios a los que sigue el User.
+     */
     private List<TwitterUser> followingList;
 
+    /**
+     * Lista de users que siguen al User pero él no les sigue.
+     */
     private List<TwitterUser> fansList;
+
+    /**
+     * Lista de usuarios que el User sigue pero no le siguen de vuelta.
+     */
     private List<TwitterUser> mutualsList;
+
+    /**
+     * Lista de usuarios que se se siguen mutuamente con el User.
+     */
     private List<TwitterUser> notFollowingYouList;
 
     private TwitterSession  session;
-    private  Twitter twitter;
+    private Twitter twitter;
 
+    /**
+     * Constructor de la clase GetData.
+     * Inicializa las listas de users,
+     * obtiene la sesión activa de twitter e
+     * inicializa el objeto twitter4j.Twitter usado para las querys a la API.
+     *
+     */
     private GetData(){
         session = TwitterCore.getInstance().getSessionManager().getActiveSession();
         followersList = new ArrayList<>();
@@ -69,11 +90,12 @@ public class GetData
 
     }
 
-    /*
-    Ejecuta una query contra la API de Twitter y obtiene los ids de los usuarios
-    que siguen al usuario que tiene la sesión activa. Luego hace otra query para
-    obtener los datos de estos usuarios.
-    Devuelve false si no es posible obtener los datos.
+    /**
+     * Ejecuta una query contra la API de Twitter y obtiene los ids de los
+     * usuarios que siguen al usuario que tiene la sesión activa. Luego hace
+     * otra query para obtener los datos de estos usuarios.
+     *
+     * @return true si obtiene los datos, false si hay un error
      */
     private boolean fetchFollowers() {
         followersList = new ArrayList<>();
@@ -124,11 +146,12 @@ public class GetData
         }
         return true;
 }
-
-    /*
-    Ejecuta una query contra la API de Twitter y obtiene los users a los que sigue el
-    usuario que tiene la sesión activa.
-    Devuelve false si no es posible obtener los datos.
+    /**
+     * Ejecuta una query contra la API de Twitter y obtiene los ids de los
+     * users a los que sigue el usuario que tiene la sesión activa. Luego
+     * ejecuta una segunda query que obtiene los datos de estos usuarios.
+     *
+     * @return true si obtiene los datos, false si hay un error
      */
     private boolean fetchFollowing(){
         followingList = new ArrayList<>();
@@ -181,9 +204,10 @@ public class GetData
         return true;
     }
 
-    /*
-    Obtiene los datos para el usuario que tiene abierta la sesión.
-    Devuelve el user o null si hay algún error.
+    /**
+     * Obtiene los datos para el usuario que tiene la sesión activa.
+     *
+     * @return User el usuario, o null si hay algún error
      */
     public User getCurrentUserData(){
         try {
@@ -195,48 +219,86 @@ public class GetData
         return null;
     }
 
-    /*
-    Obtiene los datos de seguidores y seguidos para el usuario que tiene abierta la
-    sesión.
-    Si no es posible obtener los datos, devuelve false.
+    /**
+     * Obtiene los datos de seguidores y seguidos para el usuario con la
+     * sesión activa.
+     *
+     * @return true si se obtienen los datos, false si hay algún error
      */
     public boolean fetchData(){
-        boolean result = fetchFollowing() && fetchFollowers();
-      //  if(result) calculateLists();
-        return result;
+        return  fetchFollowing() && fetchFollowers();
     }
 
+    /**
+     * Devuelve una copia de la lista de seguidores del usuario con la sesión
+     * activa.
+     *
+     * @return lista de usuarios que siguen al User
+     */
     public List<TwitterUser> getFollowers(){ return new ArrayList<>(followersList); }
 
+    /**
+     * Devuelve una copia de la lista de seguidos del usuario con la sesión
+     * activa.
+     *
+     * @return lista de usuarios seguidos por el User
+     */
     public List<TwitterUser> getFollowing() {
         return new ArrayList<>(followingList);
     }
 
+    /**
+     * Obtiene las listas de usuarios necesarias para las tabs.
+     *
+     * -fansList: lista de users que siguen al User pero él no les sigue
+     * -notFollowingYouList: lista de usuarios que el User sigue pero no
+     *      le siguen de vuelta
+     * -mutualsList: lista de usuarios que se se siguen mutuamente con el User
+     */
     public void calculateLists(){
+
         // Followers - Following
         Log.e("Followers antes", String.valueOf(getFollowers().size()));
         fansList = getFollowers();
         fansList.removeAll(getFollowing());
         Log.e("Fans list", String.valueOf(fansList.size()));
         Log.e("Followers despues", String.valueOf(getFollowers().size()));
+
         // Following - Followers
         notFollowingYouList = getFollowing();
         notFollowingYouList.removeAll(getFollowers());
         Log.e("NotF list", String.valueOf(notFollowingYouList.size()));
+
         //Followers ∪ Following
         mutualsList = getFollowing();
         mutualsList.retainAll(new HashSet<TwitterUser>(getFollowers()));
         Log.e("Mutuals list", String.valueOf(mutualsList.size()));
     }
 
+    /**
+     * Devuelve la lista de fans del User.
+     *
+     * @return lista de usuarios que son fans del User
+     */
     public List<TwitterUser> getFansList() {
         return fansList;
     }
 
+    /**
+     * Devuelvela lista de seguidores mutuos del User.
+     *
+     * @return una lista de usuarios que son mutos con el User
+     */
     public List<TwitterUser> getMutualsList() {
         return mutualsList;
     }
 
+    /**
+     * Devuelve la lista de usuarios a los que el User sigue
+     * pero no le siguen de vuelta.
+     *
+     * @return lista de users que no siguen de vuelta al User
+     */
     public List<TwitterUser> getNotFollowingYouList() {
         return notFollowingYouList;
     }

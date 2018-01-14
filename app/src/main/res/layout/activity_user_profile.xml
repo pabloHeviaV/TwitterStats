@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.yo.twitterstats.MainActivity">
+    tools:context="com.example.yo.twitterstats.activities.MainActivity">
 
     <TextView
         android:id="@+id/userData"
@@ -23,11 +23,11 @@
 
     <ImageView
         android:id="@+id/profilePic"
-        android:layout_width="88dp"
-        android:layout_height="73dp"
+        android:layout_width="123dp"
+        android:layout_height="116dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="148dp"
+        android:layout_marginTop="108dp"
         android:contentDescription="@string/contentDescriptionProfilePic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

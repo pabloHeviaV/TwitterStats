@@ -1,11 +1,11 @@
-package com.example.yo.twitterstats;
+package com.example.yo.twitterstats.bd;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by Android on 21/10/15.
+ *
  */
 public class MyDBHelper extends SQLiteOpenHelper {
 

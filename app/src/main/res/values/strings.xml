@@ -1,13 +1,27 @@
 <resources>
-    <string name="app_name">TwitterStats</string>
-    <string name="com.twitter.sdk.android.CONSUMER_KEY">2wM6G1zTaOvSjNoAZQaP9UbUr</string>
-    <string name="com.twitter.sdk.android.CONSUMER_SECRET">4tlSpm7l1s8SHPSrmToPgDZPRJWPxhUonuZ2sTxJUnQJol3QBf</string>
-    <string name="title_activity_central">CentralActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
+    <string name="app_name" translatable="false">TwitterStats</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY" translatable="false">2wM6G1zTaOvSjNoAZQaP9UbUr</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET" translatable="false">4tlSpm7l1s8SHPSrmToPgDZPRJWPxhUonuZ2sTxJUnQJol3QBf</string>
+    <string name="title_activity_central" translatable="false">CentralActivity</string>
     <string name="contentDescriptionProfilePic">Foto de perfil del usuario</string>
     <string name="cerrarSesionButton">Cerrar sesión</string>
     <string name="profileLabel">Perfil</string>
     <string name="loginLabel">Inicio de sesión</string>
+    <string name="nameProfile">Nombre:\u0020</string>
+    <string name="screenNameProfile">Nombre de usuario:\u0020</string>
+    <string name="locationProfile">Ubicación:\u0020</string>
+    <string name="followingProfile">Siguiendo:\u0020</string>
+    <string name="followersProfile">Seguidores:\u0020</string>
+    <string name="loadingAsyncProfile">\tCargando...</string>
+    <string name="errorObtainDataMessageTitle">Error al obtener los datos</string>
+    <string name="errorMsgCheckInternet">Compruebe su conexión a internet</string>
+    <string name="retry">Reintentar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="fansTabTitle">Fans</string>
+    <string name="followersTabTitle">Seguidores</string>
+    <string name="mutualsTabTitle">Mutuals</string>
+    <string name="recentUnfollowersTabTitle">Unfollowers recientes</string>
+    <string name="unfollowersTabTitle">No seguidores</string>
+    <string name="centralAsyncLoadingMessage">Obteniendo datos, podría tardar unos segundos...</string>
+    <string name="exit">Salir</string>
 </resources>

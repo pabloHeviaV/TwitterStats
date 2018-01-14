@@ -1,10 +1,12 @@
-package com.example.yo.twitterstats;
+package com.example.yo.twitterstats.bd;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.example.yo.twitterstats.util.TwitterUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,15 +53,21 @@ public class DataSource {
     }
 
     /**
-     * Cierra la conexion con la base de datos
+     * Cierra la conexión con la base de datos
      */
     public void close() {
         dbHelper.close();
     }
 
-
-    public long createValoration( TwitterUser userToInsert, String table) {
-        // Establecemos los valores que se insertaran
+    /**
+     * Inserta un TwitterUser en una tabla.
+     *
+     * @param userToInsert el usuario que se quiere insertar
+     * @param table la tabla en la que se va a insertar
+     * @return
+     */
+    public long createTwitterUser(TwitterUser userToInsert, String table) {
+        // Establecemos los valores que se insertarán
         ContentValues values = new ContentValues();
         values.put(MyDBHelper.COLUMN_ID, userToInsert.getUserId());
         values.put(MyDBHelper.COLUMN_SCREENAME,userToInsert.getScreenName());

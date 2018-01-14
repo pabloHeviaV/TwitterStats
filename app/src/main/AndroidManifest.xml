@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity android:name=".activities.MainActivity"
             android:noHistory="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -19,14 +19,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CentralActivity"
+            android:name=".activities.CentralActivity"
             android:label="@string/title_activity_central"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"/>
-        <activity android:name=".LoginActivity"
+        <activity android:name=".activities.LoginActivity"
             android:label="@string/loginLabel"
             android:screenOrientation="portrait"/>
-        <activity android:name=".UserProfileActivity"
+        <activity android:name=".activities.UserProfileActivity"
             android:label="@string/profileLabel"
             android:screenOrientation="portrait"></activity>
     </application>

@@ -8,43 +8,60 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.example.yo.twitterstats.AdaptadorListas;
-import com.example.yo.twitterstats.GetData;
+import com.example.yo.twitterstats.util.AdaptadorListas;
+import com.example.yo.twitterstats.util.GetData;
 import com.example.yo.twitterstats.R;
-import com.example.yo.twitterstats.TwitterUser;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by yo on 10/01/2018.
+ * Fragment que almacena tus seguidores.
  */
-
 public class FollowersTab extends Fragment {
 
-    private AdaptadorListas adaptadorListasFollowers;
+    private AdaptadorListas adaptadorListas;
     private ListView lista;
     private GetData gd;
     private View rootView;
 
+    /**
+     * Crea el adapter y la lista y los enlaza.
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.tab_followers, container, false);
         gd = GetData.getInstance();
 
-//        List<TwitterUser> fans = new ArrayList<TwitterUser>();
-
-        adaptadorListasFollowers = new AdaptadorListas(this.getActivity(),gd.getFollowers());
+        adaptadorListas = new AdaptadorListas(this.getActivity(),gd.getFollowers());
         Log.e("Followers", "Adapter followers creado");
         lista = (ListView) rootView.findViewById(R.id.followers);
-        lista.setAdapter(adaptadorListasFollowers);
+        lista.setAdapter(adaptadorListas);
         return rootView;
     }
 
+    /**
+     * Recarga la lista.
+     */
     public void updateList(){
-        adaptadorListasFollowers.clear();
-        adaptadorListasFollowers.addAll(gd.getFollowers());
-        adaptadorListasFollowers.notifyDataSetChanged();
+        if(adaptadorListas!=null){
+            adaptadorListas.clear();
+            adaptadorListas.addAll(gd.getFollowers());
+            adaptadorListas.notifyDataSetChanged();
+        }
+
+    }
+
+    /**
+     * Elimina todos los objetos de la lista.
+     */
+    public void clearList(){
+        if(adaptadorListas!=null){
+            adaptadorListas.clear();
+            adaptadorListas.notifyDataSetChanged();
+        }
     }
 }

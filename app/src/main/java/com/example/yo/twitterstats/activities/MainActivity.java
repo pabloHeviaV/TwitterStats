@@ -1,26 +1,26 @@
-package com.example.yo.twitterstats;
+package com.example.yo.twitterstats.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.twitter.sdk.android.core.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.identity.TwitterLoginButton;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterException;
 
-/*
-    Activity inicial que comprueba si hay una sesión abierta anterior
-    y lanza la ventana de login o la ventana central de la app según ello.
+/**
+ *  Activity inicial que comprueba si hay una sesión abierta anterior
+ *  y lanza la ventana de login o la ventana central de la app según ello.
  */
 public class MainActivity extends AppCompatActivity {
 
-
+    /**
+     * Comprueba si hay una sesión iniciada, y si la hay lanza la
+     * CentralActivity.
+     * Si no hay una sesión iniciada lanza LoginActivity.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
