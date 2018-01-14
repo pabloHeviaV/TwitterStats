@@ -8,11 +8,14 @@ package com.example.yo.twitterstats.tabs;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.yo.twitterstats.R;
 import com.example.yo.twitterstats.util.AdaptadorListas;
@@ -27,11 +30,13 @@ public class RecentUnfollowersTab extends Fragment{
     private ListView lista;
     private GetData gd;
     private View rootView;
+    private TextView tv;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab_recentunfollowers, container, false);
+        tv= (TextView) rootView.findViewById(R.id.textView);
 
         gd= GetData.getInstance();
 
@@ -39,6 +44,8 @@ public class RecentUnfollowersTab extends Fragment{
         Log.e("Recent unfollowers", "Adapter recent unfollowers creado");
         lista = (ListView) rootView.findViewById(R.id.recentUnfollowers);
         lista.setAdapter(adaptadorListas);
+        Spanned datos = Html.fromHtml(getString(R.string.recentUnfollowersTitle)+ " <b>("+gd.getUnfollowers().size()+")</b>");
+        tv.setText(datos);
         return rootView;
 
     }

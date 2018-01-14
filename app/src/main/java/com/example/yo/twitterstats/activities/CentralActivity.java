@@ -284,7 +284,8 @@ public class CentralActivity extends AppCompatActivity {
      * seguidores y seguidos.
      */
     private class AsyncCaller extends AsyncTask<Void, Void, Integer> {
-        ProgressDialog pdLoading = new ProgressDialog(CentralActivity.this);
+        ProgressDialog pdLoading = new ProgressDialog(CentralActivity.this,R.style.AppCompatAlertDialogStyle);
+
 
         /**
          * Muestra un {@link ProgressDialog} mientras se ejecuta la llamada.
@@ -294,6 +295,7 @@ public class CentralActivity extends AppCompatActivity {
             super.onPreExecute();
 
             pdLoading.setMessage(getString(R.string.centralAsyncLoadingMessage));
+            pdLoading.setCancelable(false);
             pdLoading.show();
         }
 

@@ -1,6 +1,8 @@
 package com.example.yo.twitterstats.util;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +50,7 @@ public class AdaptadorListas extends ArrayAdapter<TwitterUser> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         TextView etxDescripcion = (TextView) rowView.findViewById(R.id.texto_secundario);
 
+        txtTitle.setTextColor(ContextCompat.getColor(context,R.color.colorPrimary));
         txtTitle.setText(lista.get(posicion).getName());
         Picasso.with(context.getBaseContext()).load(lista.get(posicion).getProfilePicURL()).
                resize(250,250)

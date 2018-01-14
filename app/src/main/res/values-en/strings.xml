@@ -24,7 +24,7 @@
     <string name="myProfile">My profile:</string>
     <string name="recentUnfollowersTitle">Users who unfollowed you recently</string>
     <string name="fansTitle">Users who followed you recently but you not</string>
-    <string name="followersTitle">"Users that you follow "</string>
+    <string name="followersTitle">"Users that follow you "</string>
     <string name="mutualsTitle">Users that you follow and follow you</string>
     <string name="unfollowersTitle">"Users who do not follow you "</string>
     <string name="failureLogin">You need to have installed the Twitter app.</string>
