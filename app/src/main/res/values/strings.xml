@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">TwitterStats</string>
+    <string name="app_name" translatable="false">TwittFollows</string>
     <string name="com.twitter.sdk.android.CONSUMER_KEY" translatable="false">2wM6G1zTaOvSjNoAZQaP9UbUr</string>
     <string name="com.twitter.sdk.android.CONSUMER_SECRET" translatable="false">4tlSpm7l1s8SHPSrmToPgDZPRJWPxhUonuZ2sTxJUnQJol3QBf</string>
     <string name="title_activity_central" translatable="false">CentralActivity</string>
@@ -7,6 +7,7 @@
     <string name="cerrarSesionButton">Cerrar sesión</string>
     <string name="profileLabel">Perfil</string>
     <string name="loginLabel">Inicio de sesión</string>
+    <string name = "myProfile">Mi perfil:</string>
     <string name="nameProfile">Nombre:\u0020</string>
     <string name="screenNameProfile">Nombre de usuario:\u0020</string>
     <string name="locationProfile">Ubicación:\u0020</string>
@@ -21,7 +22,13 @@
     <string name="followersTabTitle">Seguidores</string>
     <string name="mutualsTabTitle">Mutuals</string>
     <string name="recentUnfollowersTabTitle">Unfollowers recientes</string>
+    <string name="recentUnfollowersTitle">Lista con los usuarios que te han dejado de seguir recientemente.</string>
+    <string name="fansTitle">Lista con los usuarios que no sigues y te siguen.</string>
+    <string name="mutualsTitle">Lista con los usuarios que sigues y te siguen.</string>
+    <string name="followersTitle">Lista con los usuarios que sigues.</string>
+    <string name="unfollowersTitle">Lista con los usuarios que no te siguen.</string>
     <string name="unfollowersTabTitle">No seguidores</string>
     <string name="centralAsyncLoadingMessage">Obteniendo datos, podría tardar unos segundos...</string>
     <string name="exit">Salir</string>
+    <string name="failureLogin">Es necesario que tenga instalada la aplicación de Twitter</string>
 </resources>

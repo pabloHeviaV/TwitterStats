@@ -38,7 +38,7 @@ public class DataSource {
      */
     public DataSource(Context context) {
         //el último parámetro es la versión
-        dbHelper = new MyDBHelper(context, null, null, 1);
+        dbHelper = new MyDBHelper(context, "twitter.db" , null, 1);
     }
 
     public SQLiteDatabase getBBDD(){

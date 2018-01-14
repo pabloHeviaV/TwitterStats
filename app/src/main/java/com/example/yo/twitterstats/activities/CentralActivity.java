@@ -252,24 +252,13 @@ public class CentralActivity extends AppCompatActivity {
         }
 
         /**
-         * Actualiza las listas de las primeras dos pestañas que se
-         * cargan antes de obtener los datos de los usuarios en la
-         * llamada asíncrona.
-         */
-        public void updateFirstsFragments(){
-            fansTab.updateList();
-            followersTab.updateList();
-        }
-
-        /**
          * Actualiza la lista de todas las pestañas.
          */
         public void updateAllFragments(){
             fansTab.updateList();
             followersTab.updateList();
             mutualsTab.updateList();
-            //TODO
-            //recentUnfollowersTab;
+            recentUnfollowersTab.updateList();
             unfollowersTab.updateList();
         }
 
@@ -281,8 +270,7 @@ public class CentralActivity extends AppCompatActivity {
             fansTab.clearList();
             followersTab.clearList();
             mutualsTab.clearList();
-            //TODO
-            //recentUnfollowersTab;
+            recentUnfollowersTab.clearList();
             unfollowersTab.clearList();
         }
 

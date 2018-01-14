@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(exception.getMessage().equals("Failed to get request token")) {
                     Context context = getApplicationContext();
-                    CharSequence text = "Es necesario que tenga instalada la aplicación de Twitter";
+                    CharSequence text = getString(R.string.failureLogin);
                     int duration = Toast.LENGTH_SHORT;
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();

@@ -45,7 +45,8 @@ public class GetData
         return ourInstance;
     }
 
-
+    public static final int ERROR_NO_INTERNET = 1;
+    public static final int ERROR_RATE_LIMIT_EXCEDED = 2;
 
     /**
      * Lista de usuarios que siguen al User.
@@ -127,7 +128,7 @@ public class GetData
         catch (TwitterException te) {
             te.printStackTrace();
             System.out.println("Failed to get followers' ids: " + te.getMessage());
-            return false;
+            //if(te.getMessage().equals(""))
         }
         Log.e("Ids followers",String.valueOf(ids.length));
         if(ids.length>0) {
@@ -174,8 +175,8 @@ public class GetData
             dataSource.getDbHelper().deleteFromTableUnfollowers(dataSource.getBBDD());
             List<TwitterUser> list = new ArrayList<>(followersList);
             List<TwitterUser> list2 = new ArrayList<>(copyFollowersList);
-            list.removeAll(list2);
-            for (TwitterUser twitterUser : list) {
+            list2.removeAll(list);
+            for (TwitterUser twitterUser : list2) {
                 dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_UNFOLLOWERS);
             }
             dataSource.close();
@@ -313,7 +314,7 @@ public class GetData
         dataSource.open();
         List<TwitterUser> res =  dataSource.getAllUsers(MyDBHelper.TABLE_UNFOLLOWERS);
         dataSource.close();
-        return res;
+        return new ArrayList<>(res);
         //return new ArrayList<>(followingList);
     }
 

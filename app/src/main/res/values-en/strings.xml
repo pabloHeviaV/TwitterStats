@@ -10,15 +10,22 @@
     <string name="followingProfile">Following:\u0020</string>
     <string name="followersProfile">Followers:\u0020</string>
     <string name="loadingAsyncProfile">\tLoading...</string>
-    <string name="errorObtainDataMessageTitle">Erro obtaining data</string>
+    <string name="errorObtainDataMessageTitle">Error obtaining data</string>
     <string name="errorMsgCheckInternet">Check your internet connection</string>
     <string name="retry">Retry</string>
     <string name="cancel">Cancel</string>
     <string name="fansTabTitle">Fans</string>
     <string name="followersTabTitle">Followers</string>
     <string name="mutualsTabTitle">Mutuals</string>
-    <string name="recentUnfollowersTabTitle">"Recent Unfollows "</string>
+    <string name="recentUnfollowersTabTitle">Recent Unfollows</string>
     <string name="unfollowersTabTitle">Non followers</string>
-    <string name="centralAsyncLoadingMessage">Obtaning data, this could take a while...</string>
+    <string name="centralAsyncLoadingMessage">Fetching data, this could take a while...</string>
     <string name="exit">Exit</string>
+    <string name="myProfile">My profile:</string>
+    <string name="recentUnfollowersTitle">Users who unfollowed you recently</string>
+    <string name="fansTitle">Users who followed you recently but you not</string>
+    <string name="followersTitle">"Users that you follow "</string>
+    <string name="mutualsTitle">Users that you follow and follow you</string>
+    <string name="unfollowersTitle">"Users who do not follow you "</string>
+    <string name="failureLogin">You need to have installed the Twitter app.</string>
 </resources>
