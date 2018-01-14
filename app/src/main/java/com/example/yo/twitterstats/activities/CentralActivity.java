@@ -33,6 +33,8 @@ import com.example.yo.twitterstats.util.GetData;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.http.GET;
+
 /**
  * Activity principal de la app que tiene todas las pestañas
  * con las distintas listas de usuarios dependiendo de la pestaña.
@@ -92,7 +94,7 @@ public class CentralActivity extends AppCompatActivity {
 
         boolean login = getIntent().getBooleanExtra("Login",false);
         if(login){
-            new AsyncCaller().execute(false);
+            new AsyncCaller().execute();
 
         }else{
             GetData getData = GetData.getInstance();
@@ -145,7 +147,7 @@ public class CentralActivity extends AppCompatActivity {
             lanzarPerfilActivity();
         }
         if (id == R.id.refresh_setting) {
-            new AsyncCaller().execute(true);
+            new AsyncCaller().execute();
         }
 
         return super.onOptionsItemSelected(item);
@@ -281,7 +283,7 @@ public class CentralActivity extends AppCompatActivity {
      * Ejecuta una llamada asíncrona a la API de Twitter para obtener la lista de
      * seguidores y seguidos.
      */
-    private class AsyncCaller extends AsyncTask<Boolean, Void, Map<String, Boolean>> {
+    private class AsyncCaller extends AsyncTask<Void, Void, Integer> {
         ProgressDialog pdLoading = new ProgressDialog(CentralActivity.this);
 
         /**
@@ -300,21 +302,14 @@ public class CentralActivity extends AppCompatActivity {
          * seguidores y seguidos del User
          * y coloca los flags necesarios para el postExecute.
          *
-         * @param refresh controla si la llamada viene de presionar el botón de
-         *                actualizar o de iniciar la app
-         * @return un map<String,Boolean> con dos pares de claves:
-         *  -"result": indica si ha habido algún error en la obtención de datos
-         *  -"refresh": indica si la llamada viene del botón de actualizar
-         *              o de iniciar la app
+         * @return un int que indica si ha ocurrido alguna excepción a la hora
+         * de obtener los datos.
          */
         @Override
-        protected Map<String, Boolean> doInBackground(Boolean... refresh) {
-            Map<String, Boolean> flags = new HashMap<>();
-            boolean result = GetData.getInstance().fetchData(false, CentralActivity.this);
+        protected Integer doInBackground(Void... params) {
 
-            flags.put("result",result);
-            flags.put("refresh",refresh[0]);
-            return flags;
+            int result = GetData.getInstance().fetchData(false, CentralActivity.this);
+            return result;
         }
 
         /**
@@ -327,14 +322,17 @@ public class CentralActivity extends AppCompatActivity {
          * @param flags un map con los flags necesarios
          */
         @Override
-        protected void onPostExecute(Map<String, Boolean> flags) {
+        protected void onPostExecute(Integer flags) {
             super.onPostExecute(flags);
             pdLoading.dismiss();
 
-            if (!flags.get("result")) {
+            if (!flags.equals(GetData.NO_ERROR)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CentralActivity.this);
                 builder.setTitle(R.string.errorObtainDataMessageTitle);
-                builder.setMessage(R.string.errorMsgCheckInternet);
+                if(flags.equals(GetData.ERROR_NO_INTERNET))
+                    builder.setMessage(R.string.errorMsgCheckInternet);
+                else
+                    builder.setMessage(R.string.errorMsgRateLimit);
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
                 builder.setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {

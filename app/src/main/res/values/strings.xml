@@ -31,4 +31,5 @@
     <string name="centralAsyncLoadingMessage">Obteniendo datos, podría tardar unos segundos...</string>
     <string name="exit">Salir</string>
     <string name="failureLogin">Es necesario que tenga instalada la aplicación de Twitter</string>
+    <string name="errorMsgRateLimit">Has alcanzado el límite de actualizaciones, espere unos minutos antes de volverlo a intentar</string>
 </resources>

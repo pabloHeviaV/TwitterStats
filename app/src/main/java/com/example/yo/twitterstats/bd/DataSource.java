@@ -74,13 +74,15 @@ public class DataSource {
      * @param table la tabla en la que se va a insertar
      * @return
      */
-    public long createTwitterUser(TwitterUser userToInsert, String table) {
+    public long createTwitterUser(TwitterUser userToInsert, String table, int order) {
         // Establecemos los valores que se insertarán
         ContentValues values = new ContentValues();
         values.put(MyDBHelper.COLUMN_ID, userToInsert.getUserId());
         values.put(MyDBHelper.COLUMN_SCREENAME,userToInsert.getScreenName());
         values.put(MyDBHelper.COLUMN_NAME, userToInsert.getName());
         values.put(MyDBHelper.COLUMN_PROFILE_PIC_URL, userToInsert.getProfilePicURL());
+        if(!table.equals(MyDBHelper.TABLE_UNFOLLOWERS))
+            values.put(MyDBHelper.COLUMN_ORDER, order);
 
         // Insertamos la valoracion
         long insertId = database.insert(table, null, values);
@@ -97,7 +99,7 @@ public class DataSource {
         // Lista que almacenara el resultado
         List<TwitterUser> twitterUserList = new ArrayList<TwitterUser>();
         //hacemos una query porque queremos devolver un cursor
-        Cursor cursor = database.query(table, allColumns,
+       /* Cursor cursor = database.query(table, allColumns,
                 null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -105,6 +107,17 @@ public class DataSource {
 
             twitterUserList.add(user);
             cursor.moveToNext();
+        }*/
+       String query = (table.equals(MyDBHelper.TABLE_UNFOLLOWERS)) ? "select * from "+ table
+               : "select * from "+ table + " order by " + MyDBHelper.COLUMN_ORDER + " asc ";
+        Cursor  cursor = database.rawQuery(query,null);
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                TwitterUser user = new TwitterUser(cursor.getLong(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+
+                twitterUserList.add(user);
+                cursor.moveToNext();
+            }
         }
 
         cursor.close();

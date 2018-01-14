@@ -28,4 +28,5 @@
     <string name="mutualsTitle">Users that you follow and follow you</string>
     <string name="unfollowersTitle">"Users who do not follow you "</string>
     <string name="failureLogin">You need to have installed the Twitter app.</string>
+    <string name="errorMsgRateLimit">You have reached the refresh limit, wait for a moment before trying again</string>
 </resources>

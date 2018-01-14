@@ -25,6 +25,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_SCREENAME = "screename";
     public static final String COLUMN_PROFILE_PIC_URL = "profilePicUrl";
     public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_ORDER = "recentOrder";
 
 
 
@@ -36,20 +37,24 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + "( " + COLUMN_ID + " " + "integer primary key, "
             + COLUMN_SCREENAME + " text not null, "
             + COLUMN_NAME + " text not null, "
-            + COLUMN_PROFILE_PIC_URL+ " text not null" + "); ";
+            + COLUMN_PROFILE_PIC_URL+ " text not null, "
+            + COLUMN_ORDER + " integer not null"        + "); ";
 
     private static final String DATABASE_CREATE_UNFOLLOWERS=
             "create table " + TABLE_UNFOLLOWERS
             + "( " + COLUMN_ID + " " + " integer primary key, "
             + COLUMN_SCREENAME + " text not null, "
             + COLUMN_NAME + " text not null, "
-            + COLUMN_PROFILE_PIC_URL +  " text not null" + "); ";
+            + COLUMN_PROFILE_PIC_URL +  " text not null "
+            + "); ";
+
     private static final String DATABASE_CREATE_FOLLOWERS=
             " create table " + TABLE_FOLLOWERS
             + "( " + COLUMN_ID + " " + "integer primary key, "
             + COLUMN_SCREENAME  + " text not null, "
             + COLUMN_NAME + " text not null, "
-            + COLUMN_PROFILE_PIC_URL +  " text not null" + "); ";
+            + COLUMN_PROFILE_PIC_URL +  " text not null, "
+            + COLUMN_ORDER + " integer not null" + "); ";
 
     private static final String DELETE_FROM_FOLLOWERS = "DELETE FROM " + TABLE_FOLLOWERS;
     private static final String DELETE_FROM_FOLLOWING = "DELETE FROM " + TABLE_FOLLOWING;

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 
-import com.example.yo.twitterstats.activities.CentralActivity;
 import com.example.yo.twitterstats.bd.DataSource;
 import com.example.yo.twitterstats.bd.MyDBHelper;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TreeMap;
 
 import twitter4j.IDs;
 import twitter4j.ResponseList;
@@ -47,6 +45,7 @@ public class GetData
 
     public static final int ERROR_NO_INTERNET = 1;
     public static final int ERROR_RATE_LIMIT_EXCEDED = 2;
+    public static final int NO_ERROR = 0;
 
     /**
      * Lista de usuarios que siguen al User.
@@ -61,7 +60,7 @@ public class GetData
     /**
      * Lista desactualizada de los seguidores (recent unfollowers)
      */
-    private List<TwitterUser> copyFollowersList;
+    private List<TwitterUser> previousFollowersList;
 
     /**
      * Lista de users que siguen al User pero él no les sigue.
@@ -114,9 +113,9 @@ public class GetData
      *
      * @return true si obtiene los datos, false si hay un error
      */
-    private boolean fetchFollowers() {
+    private int fetchFollowers() {
         dataSource.open();
-        copyFollowersList = dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWERS);
+        previousFollowersList = dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWERS);
         dataSource.getDbHelper().deleteFromTableFollowers(dataSource.getBBDD());
         followersList = new ArrayList<>();
         long[] ids = null;
@@ -128,12 +127,13 @@ public class GetData
         catch (TwitterException te) {
             te.printStackTrace();
             System.out.println("Failed to get followers' ids: " + te.getMessage());
-            //if(te.getMessage().equals(""))
+            return ERROR_RATE_LIMIT_EXCEDED;
         }
         Log.e("Ids followers",String.valueOf(ids.length));
         if(ids.length>0) {
             try {
                 int i = 0;
+                int n = 0;
                 int limit;
                 do {
                     // Corta el array de ids en array de 100 como max
@@ -152,7 +152,7 @@ public class GetData
                                 u.getName(),
                                 u.getOriginalProfileImageURL()
                         );
-                        dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_FOLLOWERS);
+                        dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_FOLLOWERS, n++);
                         followersList.add(twitterUser);
                     }
                     i += 100;
@@ -161,28 +161,28 @@ public class GetData
             } catch (TwitterException te) {
                 te.printStackTrace();
                 System.out.println("Failed to get followers info: " + te.getMessage());
-                return false;
+                return GetData.ERROR_RATE_LIMIT_EXCEDED;
             }
             Log.e("Nº followers", String.valueOf(followersList.size()));
         }
         dataSource.close();
-        return true;
+        return GetData.NO_ERROR;
 }
 
-    private boolean fetchRecentUnfollowers(){
-        if(copyFollowersList != null) {
+    private void fetchRecentUnfollowers(){
+        if(previousFollowersList != null) {
             dataSource.open();
             dataSource.getDbHelper().deleteFromTableUnfollowers(dataSource.getBBDD());
-            List<TwitterUser> list = new ArrayList<>(followersList);
-            List<TwitterUser> list2 = new ArrayList<>(copyFollowersList);
-            list2.removeAll(list);
-            for (TwitterUser twitterUser : list2) {
-                dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_UNFOLLOWERS);
+            List<TwitterUser> followers = getFollowers();
+            List<TwitterUser> previousFollowers = new ArrayList<>(previousFollowersList);
+            previousFollowers.removeAll(followers);
+            for (TwitterUser twitterUser : previousFollowers) {
+                dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_UNFOLLOWERS, 0);
             }
             dataSource.close();
-            return true;
+
         }
-        return true;
+
     }
 
     /**
@@ -192,7 +192,7 @@ public class GetData
      *
      * @return true si obtiene los datos, false si hay un error
      */
-    private boolean fetchFollowing(){
+    private int fetchFollowing(){
         dataSource.open();
         dataSource.getDbHelper().deleteFromTableFollowing(dataSource.getBBDD());
         followingList = new ArrayList<>();
@@ -205,13 +205,14 @@ public class GetData
         catch (TwitterException te) {
             te.printStackTrace();
             System.out.println("Failed to get following' ids: " + te.getMessage());
-            return false;
+            return ERROR_RATE_LIMIT_EXCEDED;
         }
         Log.e("Ids following",String.valueOf(ids.length));
 
         if(ids.length>0) {
             try {
                 int i = 0;
+                int n = 0;
                 int limit;
                 do {
                     // Corta el array de ids en array de 100 como max
@@ -230,7 +231,7 @@ public class GetData
                                 u.getName(),
                                 u.getOriginalProfileImageURL()
                         );
-                        dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_FOLLOWING);
+                        dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_FOLLOWING, n++);
                         followingList.add(twitterUser);
                     }
                     i += 100;
@@ -239,12 +240,12 @@ public class GetData
             } catch (TwitterException te) {
                 te.printStackTrace();
                 System.out.println("Failed to get following info: " + te.getMessage());
-                return false;
+                return GetData.ERROR_RATE_LIMIT_EXCEDED;
             }
             Log.e("Nº following", String.valueOf(followingList.size()));
         }
         dataSource.close();
-        return true;
+        return GetData.NO_ERROR;
     }
 
     /**
@@ -269,25 +270,33 @@ public class GetData
      * Los datos son obtenidos de la bd o de la API dependiendo del parámetro.
      *
      * @param db si es true obtiene los datos de la bd, si es false de la API
-     * @return true si se obtienen los datos, false si hay algún error
+     * @return un int dependiendo de si hay algún error.
      */
-    public boolean fetchData(boolean db, Context context){
+    public int fetchData(boolean db, Context context){
         dataSource = new DataSource(context);
         if(db)
             return fetchFromDB();
-        else
-        return  fetchFollowing() && fetchFollowers() && fetchRecentUnfollowers();
+        else{
+            if(!new Conectivity(context).hayConexion())
+                return GetData.ERROR_NO_INTERNET;
+            if(fetchFollowing() + fetchFollowers() == GetData.NO_ERROR) {
+                fetchRecentUnfollowers();
+                return GetData.NO_ERROR;
+            }
+            else
+              return  GetData.ERROR_RATE_LIMIT_EXCEDED;
+        }
     }
 
 
 
-    private boolean fetchFromDB(){
+    private int fetchFromDB(){
         dataSource.open();
         followersList =  dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWERS);
         followingList =  dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWING);
         dataSource.close();
 
-        return true;
+        return GetData.NO_ERROR;
     }
 
     /**
