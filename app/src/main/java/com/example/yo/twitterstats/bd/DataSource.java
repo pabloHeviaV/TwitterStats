@@ -41,6 +41,14 @@ public class DataSource {
         dbHelper = new MyDBHelper(context, null, null, 1);
     }
 
+    public SQLiteDatabase getBBDD(){
+        return database;
+    }
+
+    public MyDBHelper getDbHelper(){
+        return dbHelper;
+    }
+
     /**
      * Abre una conexion para escritura con la base de datos.
      * Esto lo hace a traves del helper con la llamada a getWritableDatabase. Si la base de
@@ -93,7 +101,7 @@ public class DataSource {
                 null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            final TwitterUser user = new TwitterUser(cursor.getLong(1),cursor.getString(2),cursor.getString(3),cursor.getString(4));
+            final TwitterUser user = new TwitterUser(cursor.getLong(0),cursor.getString(1),cursor.getString(3),cursor.getString(2));
 
             twitterUserList.add(user);
             cursor.moveToNext();

@@ -1,8 +1,12 @@
 package com.example.yo.twitterstats.util;
 
+import android.content.Context;
 import android.util.Log;
 
 
+import com.example.yo.twitterstats.activities.CentralActivity;
+import com.example.yo.twitterstats.bd.DataSource;
+import com.example.yo.twitterstats.bd.MyDBHelper;
 import com.twitter.sdk.android.core.TwitterCore;
 
 import com.twitter.sdk.android.core.TwitterSession;
@@ -11,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TreeMap;
 
 import twitter4j.IDs;
 import twitter4j.ResponseList;
@@ -32,9 +37,16 @@ public class GetData
 {
     // Singleton
     private static final GetData ourInstance = new GetData();
-    public static GetData getInstance() {
+
+    //BBDD
+    private static DataSource dataSource;
+
+    public static GetData getInstance(Context context) {
+        dataSource = new DataSource(context);
         return ourInstance;
     }
+
+
 
     /**
      * Lista de usuarios que siguen al User.
@@ -45,6 +57,11 @@ public class GetData
      * Lista de usuarios a los que sigue el User.
      */
     private List<TwitterUser> followingList;
+
+    /**
+     * Lista desactualizada de los seguidores (recent unfollowers)
+     */
+    private List<TwitterUser> copyFollowersList;
 
     /**
      * Lista de users que siguen al User pero él no les sigue.
@@ -98,6 +115,9 @@ public class GetData
      * @return true si obtiene los datos, false si hay un error
      */
     private boolean fetchFollowers() {
+        dataSource.open();
+        copyFollowersList = dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWERS);
+        dataSource.getDbHelper().deleteFromTableFollowers(dataSource.getBBDD());
         followersList = new ArrayList<>();
         long[] ids = null;
         try {
@@ -111,7 +131,6 @@ public class GetData
             return false;
         }
         Log.e("Ids followers",String.valueOf(ids.length));
-
         if(ids.length>0) {
             try {
                 int i = 0;
@@ -125,6 +144,7 @@ public class GetData
                     Log.e("i",String.valueOf(i));
                     Log.e("limit",String.valueOf(limit));
                     ResponseList<User> users = twitter.lookupUsers(idsSlice);
+
                     for (User u : users) {
                         TwitterUser twitterUser = new TwitterUser(
                                 u.getId(),
@@ -132,6 +152,7 @@ public class GetData
                                 u.getName(),
                                 u.getOriginalProfileImageURL()
                         );
+                        dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_FOLLOWERS);
                         followersList.add(twitterUser);
                     }
                     i += 100;
@@ -144,8 +165,26 @@ public class GetData
             }
             Log.e("Nº followers", String.valueOf(followersList.size()));
         }
+        dataSource.close();
         return true;
 }
+
+    private boolean fetchRecentUnfollowers(){
+        if(copyFollowersList != null) {
+            dataSource.open();
+            dataSource.getDbHelper().deleteFromTableUnfollowers(dataSource.getBBDD());
+            List<TwitterUser> list = new ArrayList<>(followersList);
+            List<TwitterUser> list2 = new ArrayList<>(copyFollowersList);
+            list.removeAll(list2);
+            for (TwitterUser twitterUser : list) {
+                dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_UNFOLLOWERS);
+            }
+            dataSource.close();
+            return true;
+        }
+        return true;
+    }
+
     /**
      * Ejecuta una query contra la API de Twitter y obtiene los ids de los
      * users a los que sigue el usuario que tiene la sesión activa. Luego
@@ -154,6 +193,8 @@ public class GetData
      * @return true si obtiene los datos, false si hay un error
      */
     private boolean fetchFollowing(){
+        dataSource.open();
+        dataSource.getDbHelper().deleteFromTableFollowing(dataSource.getBBDD());
         followingList = new ArrayList<>();
         long[] ids = null;
         try {
@@ -189,6 +230,7 @@ public class GetData
                                 u.getName(),
                                 u.getOriginalProfileImageURL()
                         );
+                        dataSource.createTwitterUser(twitterUser, MyDBHelper.TABLE_FOLLOWING);
                         followingList.add(twitterUser);
                     }
                     i += 100;
@@ -201,6 +243,7 @@ public class GetData
             }
             Log.e("Nº following", String.valueOf(followingList.size()));
         }
+        dataSource.close();
         return true;
     }
 
@@ -226,7 +269,7 @@ public class GetData
      * @return true si se obtienen los datos, false si hay algún error
      */
     public boolean fetchData(){
-        return  fetchFollowing() && fetchFollowers();
+        return  fetchFollowing() && fetchFollowers() && fetchRecentUnfollowers();
     }
 
     /**
@@ -235,7 +278,13 @@ public class GetData
      *
      * @return lista de usuarios que siguen al User
      */
-    public List<TwitterUser> getFollowers(){ return new ArrayList<>(followersList); }
+    public List<TwitterUser> getFollowers(){
+        dataSource.open();
+        List<TwitterUser> res =  dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWERS);
+        dataSource.close();
+        return res;
+        //return new ArrayList<>(followersList);
+    }
 
     /**
      * Devuelve una copia de la lista de seguidos del usuario con la sesión
@@ -244,7 +293,19 @@ public class GetData
      * @return lista de usuarios seguidos por el User
      */
     public List<TwitterUser> getFollowing() {
-        return new ArrayList<>(followingList);
+        dataSource.open();
+        List<TwitterUser> res =  dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWING);
+        dataSource.close();
+        return res;
+        //return new ArrayList<>(followingList);
+    }
+
+    public List<TwitterUser> getUnfollowers() {
+        dataSource.open();
+        List<TwitterUser> res =  dataSource.getAllUsers(MyDBHelper.TABLE_UNFOLLOWERS);
+        dataSource.close();
+        return res;
+        //return new ArrayList<>(followingList);
     }
 
     /**

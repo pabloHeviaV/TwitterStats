@@ -19,6 +19,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
      */
     public static final String TABLE_FOLLOWING = "following";
     public static final String TABLE_FOLLOWERS = "followers";
+    public static final String TABLE_UNFOLLOWERS = "unfollowers";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_SCREENAME = "screename";
@@ -30,23 +31,34 @@ public class MyDBHelper extends SQLiteOpenHelper {
     /**
      * Script para crear la base datos
      */
-    private static final String DATABASE_CREATE =
+    private static final String DATABASE_CREATE_FOLLOWING =
             "create table " + TABLE_FOLLOWING
-            + "( " + COLUMN_ID + " " + "bigint primary key, "
+            + "( " + COLUMN_ID + " " + "integer primary key, "
             + COLUMN_SCREENAME + " text not null, "
             + COLUMN_NAME + " text not null, "
-            + COLUMN_PROFILE_PIC_URL+ " text not null" + "); " +
+            + COLUMN_PROFILE_PIC_URL+ " text not null" + "); ";
 
-            "create table " + TABLE_FOLLOWERS
-            + "( " + COLUMN_ID + " " + "bigint primary key, "
+    private static final String DATABASE_CREATE_UNFOLLOWERS=
+            "create table " + TABLE_UNFOLLOWERS
+            + "( " + COLUMN_ID + " " + " integer primary key, "
+            + COLUMN_SCREENAME + " text not null, "
+            + COLUMN_NAME + " text not null, "
+            + COLUMN_PROFILE_PIC_URL +  " text not null" + "); ";
+    private static final String DATABASE_CREATE_FOLLOWERS=
+            " create table " + TABLE_FOLLOWERS
+            + "( " + COLUMN_ID + " " + "integer primary key, "
             + COLUMN_SCREENAME  + " text not null, "
             + COLUMN_NAME + " text not null, "
             + COLUMN_PROFILE_PIC_URL +  " text not null" + "); ";
 
+    private static final String DELETE_FROM_FOLLOWERS = "DELETE FROM " + TABLE_FOLLOWERS;
+    private static final String DELETE_FROM_FOLLOWING = "DELETE FROM " + TABLE_FOLLOWING;
+    private static final String DELETE_FROM_UNFOLLOWERS = "DELETE FROM " + TABLE_UNFOLLOWERS;
+
     /**
      * Script para borrar la base de datos
      */
-   // private static final String DATABASE_DROP = "DROP TABLE IF EXISTS " + TABLE_USERS;
+    private static final String DATABASE_DROP = "DROP TABLE IF EXISTS ";
 
     public MyDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
                       int version) {
@@ -54,17 +66,33 @@ public class MyDBHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public void deleteFromTableUnfollowers(SQLiteDatabase db){
+        db.execSQL(DELETE_FROM_UNFOLLOWERS);
+    }
+
+    public void deleteFromTableFollowers(SQLiteDatabase db){
+        db.execSQL(DELETE_FROM_FOLLOWERS);
+    }
+
+    public void deleteFromTableFollowing(SQLiteDatabase db){
+        db.execSQL(DELETE_FROM_FOLLOWING);
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         //invocacamos execSQL pq no devuelve ningún tipo de dataset
-        db.execSQL(DATABASE_CREATE);
+        db.execSQL(DATABASE_CREATE_FOLLOWERS);
+        db.execSQL(DATABASE_CREATE_FOLLOWING);
+        db.execSQL(DATABASE_CREATE_UNFOLLOWERS);
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /*db.execSQL(DATABASE_DROP);
-        this.onCreate(db);*/
+        db.execSQL(DATABASE_DROP+ TABLE_FOLLOWERS);
+        db.execSQL(DATABASE_DROP+ TABLE_FOLLOWING);
+        db.execSQL(DATABASE_DROP+ TABLE_UNFOLLOWERS);
+        this.onCreate(db);
 
     }
 }

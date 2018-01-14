@@ -117,7 +117,7 @@ public class UserProfileActivity extends AppCompatActivity {
          */
         @Override
         protected User doInBackground(Void... params) {
-            User currentUser = GetData.getInstance().getCurrentUserData();
+            User currentUser = GetData.getInstance(getApplicationContext()).getCurrentUserData();
 
             return currentUser;
         }

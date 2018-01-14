@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.yo.twitterstats.R;
+import com.example.yo.twitterstats.bd.DataSource;
 import com.example.yo.twitterstats.tabs.FansTab;
 import com.example.yo.twitterstats.tabs.FollowersTab;
 import com.example.yo.twitterstats.tabs.MutualsTab;
@@ -87,7 +88,13 @@ public class CentralActivity extends AppCompatActivity {
 
         registrarReceiver();
 
-        new AsyncCaller().execute(false);
+       // new AsyncCaller().execute(false);
+        boolean login = getIntent().getBooleanExtra("Login",false);
+        if(login){
+            new AsyncCaller().execute(false);
+        }else{
+            //
+        }
     }
 
     /**
@@ -311,7 +318,7 @@ public class CentralActivity extends AppCompatActivity {
         @Override
         protected Map<String, Boolean> doInBackground(Boolean... refresh) {
             Map<String, Boolean> flags = new HashMap<>();
-            boolean result = GetData.getInstance().fetchData();
+            boolean result = GetData.getInstance(CentralActivity.this).fetchData();
 
             flags.put("result",result);
             flags.put("refresh",refresh[0]);
@@ -351,7 +358,7 @@ public class CentralActivity extends AppCompatActivity {
                 builder.show();
 
             } else {
-                GetData.getInstance().calculateLists();
+                GetData.getInstance(getApplicationContext()).calculateLists();
                 if(flags.get("refresh"))
                     mSectionsPagerAdapter.updateAllFragments();
                 else

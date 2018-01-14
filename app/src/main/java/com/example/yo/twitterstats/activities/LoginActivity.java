@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 //Te lleva a la activity central
                 Intent intent = new Intent(getApplicationContext(), CentralActivity.class);
+                intent.putExtra("Login",true);
                 startActivity(intent);
                 finish();
 
