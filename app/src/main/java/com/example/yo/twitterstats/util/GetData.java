@@ -41,8 +41,7 @@ public class GetData
     //BBDD
     private static DataSource dataSource;
 
-    public static GetData getInstance(Context context) {
-        dataSource = new DataSource(context);
+    public static GetData getInstance() {
         return ourInstance;
     }
 
@@ -266,10 +265,28 @@ public class GetData
      * Obtiene los datos de seguidores y seguidos para el usuario con la
      * sesión activa.
      *
+     * Los datos son obtenidos de la bd o de la API dependiendo del parámetro.
+     *
+     * @param db si es true obtiene los datos de la bd, si es false de la API
      * @return true si se obtienen los datos, false si hay algún error
      */
-    public boolean fetchData(){
+    public boolean fetchData(boolean db, Context context){
+        dataSource = new DataSource(context);
+        if(db)
+            return fetchFromDB();
+        else
         return  fetchFollowing() && fetchFollowers() && fetchRecentUnfollowers();
+    }
+
+
+
+    private boolean fetchFromDB(){
+        dataSource.open();
+        followersList =  dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWERS);
+        followingList =  dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWING);
+        dataSource.close();
+
+        return true;
     }
 
     /**
@@ -279,11 +296,7 @@ public class GetData
      * @return lista de usuarios que siguen al User
      */
     public List<TwitterUser> getFollowers(){
-        dataSource.open();
-        List<TwitterUser> res =  dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWERS);
-        dataSource.close();
-        return res;
-        //return new ArrayList<>(followersList);
+        return new ArrayList<>(followersList);
     }
 
     /**
@@ -293,11 +306,7 @@ public class GetData
      * @return lista de usuarios seguidos por el User
      */
     public List<TwitterUser> getFollowing() {
-        dataSource.open();
-        List<TwitterUser> res =  dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWING);
-        dataSource.close();
-        return res;
-        //return new ArrayList<>(followingList);
+        return new ArrayList<>(followingList);
     }
 
     public List<TwitterUser> getUnfollowers() {
@@ -362,6 +371,14 @@ public class GetData
      */
     public List<TwitterUser> getNotFollowingYouList() {
         return notFollowingYouList;
+    }
+
+    public void clear(){
+        fansList.clear();
+        followingList.clear();
+        mutualsList.clear();
+        notFollowingYouList.clear();
+        followersList.clear();
     }
 }
 

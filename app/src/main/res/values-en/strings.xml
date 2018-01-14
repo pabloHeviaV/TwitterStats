@@ -4,11 +4,11 @@
     <string name="cerrarSesionButton">Logout</string>
     <string name="profileLabel">Profile</string>
     <string name="loginLabel">Login</string>
-    <string name="nameProfile">Name:\\u0020</string>
-    <string name="screenNameProfile">Screen name:\\u0020</string>
-    <string name="locationProfile">Location:\\u0020</string>
-    <string name="followingProfile">Following:\\u0020</string>
-    <string name="followersProfile">Followers:\\u0020</string>
+    <string name="nameProfile">Name:\u0020</string>
+    <string name="screenNameProfile">Screen name:\u0020</string>
+    <string name="locationProfile">Location:\u0020</string>
+    <string name="followingProfile">Following:\u0020</string>
+    <string name="followersProfile">Followers:\u0020</string>
     <string name="loadingAsyncProfile">\tLoading...</string>
     <string name="errorObtainDataMessageTitle">Erro obtaining data</string>
     <string name="errorMsgCheckInternet">Check your internet connection</string>

@@ -14,11 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.yo.twitterstats.R;
+import com.example.yo.twitterstats.bd.MyDBHelper;
 import com.example.yo.twitterstats.util.GetData;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
 
+import retrofit2.http.GET;
 import twitter4j.User;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -117,7 +119,7 @@ public class UserProfileActivity extends AppCompatActivity {
          */
         @Override
         protected User doInBackground(Void... params) {
-            User currentUser = GetData.getInstance(getApplicationContext()).getCurrentUserData();
+            User currentUser = GetData.getInstance().getCurrentUserData();
 
             return currentUser;
         }

@@ -35,7 +35,7 @@ public class MutualsTab extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab_mutuals, container, false);
-        gd= GetData.getInstance(getActivity().getApplicationContext());
+        gd= GetData.getInstance();
 
         adaptadorListas = new AdaptadorListas(this.getActivity(),gd.getMutualsList());
         Log.e("mutuals","Adapter mutual creado");

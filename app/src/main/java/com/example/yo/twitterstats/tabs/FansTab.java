@@ -35,7 +35,7 @@ public class FansTab extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.tab_fans, container, false);
-        gd = GetData.getInstance(getActivity().getApplicationContext());
+        gd = GetData.getInstance();
 
         adaptadorListas = new AdaptadorListas(this.getActivity(),gd.getFansList());
         Log.e("Fans", "Adapter fans creado");
@@ -63,6 +63,7 @@ public class FansTab extends Fragment{
         if(adaptadorListas!=null){
             adaptadorListas.clear();
             adaptadorListas.notifyDataSetChanged();
+            Log.e("CLEAR FANS", "clear fragments");
         }
     }
 

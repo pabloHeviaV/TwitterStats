@@ -34,7 +34,7 @@ public class FollowersTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.tab_followers, container, false);
-        gd = GetData.getInstance(getActivity().getApplicationContext());
+        gd = GetData.getInstance();
 
         adaptadorListas = new AdaptadorListas(this.getActivity(),gd.getFollowers());
         Log.e("Followers", "Adapter followers creado");

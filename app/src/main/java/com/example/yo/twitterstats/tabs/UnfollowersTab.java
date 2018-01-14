@@ -42,7 +42,7 @@ public class UnfollowersTab extends Fragment{
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab_unfollowers, container, false);
 
-        gd= GetData.getInstance(getActivity().getApplicationContext());
+        gd= GetData.getInstance();
 
         adaptadorListas = new AdaptadorListas(this.getActivity(),gd.getNotFollowingYouList());
         Log.e("Unfollowers", "Adapter unfollowers creado");

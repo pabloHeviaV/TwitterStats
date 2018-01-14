@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -58,6 +59,7 @@ public class CentralActivity extends AppCompatActivity {
      */
     private BroadcastReceiver broadcast_reciever;
 
+
     /**
      * Crea los elementos necesarios para lanzar la activity,
      * registra el BroadcastReceiver y se encarga de llamar
@@ -88,12 +90,14 @@ public class CentralActivity extends AppCompatActivity {
 
         registrarReceiver();
 
-       // new AsyncCaller().execute(false);
         boolean login = getIntent().getBooleanExtra("Login",false);
         if(login){
             new AsyncCaller().execute(false);
+
         }else{
-            //
+            GetData getData = GetData.getInstance();
+            getData.fetchData(true, this);
+            getData.calculateLists();
         }
     }
 
@@ -105,6 +109,7 @@ public class CentralActivity extends AppCompatActivity {
     protected void onDestroy() {
         unregisterReceiver(broadcast_reciever);
         mSectionsPagerAdapter.clearAllFragments();
+
         super.onDestroy();
 
     }
@@ -172,7 +177,6 @@ public class CentralActivity extends AppCompatActivity {
         };
         registerReceiver(broadcast_reciever, new IntentFilter("finish_activity"));
     }
-
 
     /**
      * Un {@link FragmentPagerAdapter} que devuelve un fragment correspondiente
@@ -255,7 +259,6 @@ public class CentralActivity extends AppCompatActivity {
         public void updateFirstsFragments(){
             fansTab.updateList();
             followersTab.updateList();
-
         }
 
         /**
@@ -271,9 +274,10 @@ public class CentralActivity extends AppCompatActivity {
         }
 
         /**
-         * Actualiza la lista de todas las pestañas.
+         * Limpia la lista de todas las pestañas.
          */
         public void clearAllFragments(){
+            GetData.getInstance().clear();
             fansTab.clearList();
             followersTab.clearList();
             mutualsTab.clearList();
@@ -318,7 +322,7 @@ public class CentralActivity extends AppCompatActivity {
         @Override
         protected Map<String, Boolean> doInBackground(Boolean... refresh) {
             Map<String, Boolean> flags = new HashMap<>();
-            boolean result = GetData.getInstance(CentralActivity.this).fetchData();
+            boolean result = GetData.getInstance().fetchData(false, CentralActivity.this);
 
             flags.put("result",result);
             flags.put("refresh",refresh[0]);
@@ -358,12 +362,8 @@ public class CentralActivity extends AppCompatActivity {
                 builder.show();
 
             } else {
-                GetData.getInstance(getApplicationContext()).calculateLists();
-                if(flags.get("refresh"))
-                    mSectionsPagerAdapter.updateAllFragments();
-                else
-                    mSectionsPagerAdapter.updateFirstsFragments();
-
+                GetData.getInstance().calculateLists();
+                mSectionsPagerAdapter.updateAllFragments();
             }
         }
 

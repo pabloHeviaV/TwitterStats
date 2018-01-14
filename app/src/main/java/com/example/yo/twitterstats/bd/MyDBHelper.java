@@ -93,6 +93,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(DATABASE_DROP+ TABLE_FOLLOWING);
         db.execSQL(DATABASE_DROP+ TABLE_UNFOLLOWERS);
         this.onCreate(db);
+    }
 
+    public static void dropDB(SQLiteDatabase db){
+        db.execSQL(DATABASE_DROP+ TABLE_FOLLOWERS);
+        db.execSQL(DATABASE_DROP+ TABLE_FOLLOWING);
+        db.execSQL(DATABASE_DROP+ TABLE_UNFOLLOWERS);
     }
 }
