@@ -26,7 +26,7 @@
     <string name="fansTitle">Lista con los usuarios que no sigues y te siguen.</string>
     <string name="mutualsTitle">Lista con los usuarios que sigues y te siguen.</string>
     <string name="followersTitle">Lista con los usuarios que te siguen.</string>
-    <string name="unfollowersTitle">Lista con los usuarios que no te siguen.</string>
+    <string name="unfollowersTitle">Lista con los usuarios que sigues y no te siguen.</string>
     <string name="unfollowersTabTitle">No seguidores</string>
     <string name="centralAsyncLoadingMessage">Obteniendo datos, podría tardar unos segundos...</string>
     <string name="exit">Salir</string>

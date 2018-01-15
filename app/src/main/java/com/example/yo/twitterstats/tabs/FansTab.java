@@ -59,6 +59,8 @@ public class FansTab extends Fragment{
             adaptadorListas.clear();
             adaptadorListas.addAll(gd.getFansList());
             adaptadorListas.notifyDataSetChanged();
+            Spanned datos = Html.fromHtml(getString(R.string.fansTitle)+" <b>("+gd.getFansList().size()+")</b>");
+            tv.setText(datos);
         }
 
     }
@@ -70,7 +72,8 @@ public class FansTab extends Fragment{
         if(adaptadorListas!=null){
             adaptadorListas.clear();
             adaptadorListas.notifyDataSetChanged();
-            Log.e("CLEAR FANS", "clear fragments");
+            Spanned datos = Html.fromHtml(getString(R.string.fansTitle)+" <b>(0)</b>");
+            tv.setText(datos);
         }
     }
 

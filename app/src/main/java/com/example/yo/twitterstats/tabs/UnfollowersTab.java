@@ -65,6 +65,8 @@ public class UnfollowersTab extends Fragment{
             adaptadorListas.clear();
             adaptadorListas.addAll(gd.getNotFollowingYouList());
             adaptadorListas.notifyDataSetChanged();
+            Spanned datos = Html.fromHtml(getString(R.string.unfollowersTitle)+" <b>("+gd.getNotFollowingYouList().size()+")</b>");
+            tv.setText(datos);
         }
 
    }
@@ -76,6 +78,8 @@ public class UnfollowersTab extends Fragment{
        if(adaptadorListas!=null){
             adaptadorListas.clear();
             adaptadorListas.notifyDataSetChanged();
+           Spanned datos = Html.fromHtml(getString(R.string.unfollowersTitle)+" <b>(0)</b>");
+           tv.setText(datos);
         }
     }
 }

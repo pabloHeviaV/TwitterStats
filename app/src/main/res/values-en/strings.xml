@@ -10,7 +10,7 @@
     <string name="followingProfile">Following:\u0020</string>
     <string name="followersProfile">Followers:\u0020</string>
     <string name="loadingAsyncProfile">\tLoading...</string>
-    <string name="errorObtainDataMessageTitle">Error obtaining data</string>
+    <string name="errorObtainDataMessageTitle">Error fetching data</string>
     <string name="errorMsgCheckInternet">Check your internet connection</string>
     <string name="retry">Retry</string>
     <string name="cancel">Cancel</string>
@@ -23,10 +23,10 @@
     <string name="exit">Exit</string>
     <string name="myProfile">My profile:</string>
     <string name="recentUnfollowersTitle">Users who unfollowed you recently</string>
-    <string name="fansTitle">Users who followed you recently but you not</string>
-    <string name="followersTitle">"Users that follow you "</string>
-    <string name="mutualsTitle">Users that you follow and follow you</string>
-    <string name="unfollowersTitle">"Users who do not follow you "</string>
+    <string name="fansTitle">Followers who you don\'t follow</string>
+    <string name="followersTitle">"Users who you follow "</string>
+    <string name="mutualsTitle">Users who you follow and they follow you back</string>
+    <string name="unfollowersTitle">"Users who don't follow you back "</string>
     <string name="failureLogin">You need to have installed the Twitter app.</string>
     <string name="errorMsgRateLimit">You have reached the refresh limit, wait for a moment before trying again</string>
 </resources>

@@ -59,6 +59,8 @@ public class MutualsTab extends Fragment{
             adaptadorListas.clear();
             adaptadorListas.addAll(gd.getMutualsList());
             adaptadorListas.notifyDataSetChanged();
+            Spanned datos = Html.fromHtml(getString(R.string.mutualsTitle)+" <b>("+gd.getMutualsList().size()+")</b>");
+            tv.setText(datos);
         }
 
     }
@@ -70,6 +72,8 @@ public class MutualsTab extends Fragment{
         if(adaptadorListas!=null){
             adaptadorListas.clear();
             adaptadorListas.notifyDataSetChanged();
+            Spanned datos = Html.fromHtml(getString(R.string.mutualsTitle)+" <b>(0)</b>");
+            tv.setText(datos);
         }
     }
 }

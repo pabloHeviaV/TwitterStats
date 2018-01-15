@@ -58,6 +58,8 @@ public class RecentUnfollowersTab extends Fragment{
             adaptadorListas.clear();
             adaptadorListas.addAll(gd.getUnfollowers());
             adaptadorListas.notifyDataSetChanged();
+            Spanned datos = Html.fromHtml(getString(R.string.recentUnfollowersTitle)+ " <b>("+gd.getUnfollowers().size()+")</b>");
+            tv.setText(datos);
         }
 
     }
@@ -69,6 +71,8 @@ public class RecentUnfollowersTab extends Fragment{
         if(adaptadorListas!=null){
             adaptadorListas.clear();
             adaptadorListas.notifyDataSetChanged();
+            Spanned datos = Html.fromHtml(getString(R.string.recentUnfollowersTitle)+ " <b>(0)</b>");
+            tv.setText(datos);
         }
     }
 

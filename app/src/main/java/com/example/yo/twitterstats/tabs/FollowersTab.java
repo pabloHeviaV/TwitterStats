@@ -58,6 +58,8 @@ public class FollowersTab extends Fragment {
             adaptadorListas.clear();
             adaptadorListas.addAll(gd.getFollowers());
             adaptadorListas.notifyDataSetChanged();
+            Spanned datos = Html.fromHtml(getString(R.string.followersTitle)+" <b>("+gd.getFollowers().size()+")</b>");
+            tv.setText(datos);
         }
 
     }
@@ -69,6 +71,8 @@ public class FollowersTab extends Fragment {
         if(adaptadorListas!=null){
             adaptadorListas.clear();
             adaptadorListas.notifyDataSetChanged();
+            Spanned datos = Html.fromHtml(getString(R.string.followersTitle)+" <b>(0)</b>");
+            tv.setText(datos);
         }
     }
 }
