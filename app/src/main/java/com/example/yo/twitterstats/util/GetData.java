@@ -88,7 +88,7 @@ public class GetData
      *
      */
     private GetData(){
-        session = TwitterCore.getInstance().getSessionManager().getActiveSession();
+        //session = TwitterCore.getInstance().getSessionManager().getActiveSession();
         followersList = new ArrayList<>();
         followingList = new ArrayList<>();
         fansList= new ArrayList<>();
@@ -115,7 +115,7 @@ public class GetData
      */
     private int fetchFollowers() {
         dataSource.open();
-        previousFollowersList = dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWERS);
+        previousFollowersList = new ArrayList<>(followersList);//dataSource.getAllUsers(MyDBHelper.TABLE_FOLLOWERS);
         dataSource.getDbHelper().deleteFromTableFollowers(dataSource.getBBDD());
         followersList = new ArrayList<>();
         long[] ids = null;
@@ -257,7 +257,8 @@ public class GetData
      */
     public User getCurrentUserData(){
         try {
-           return twitter.showUser(session.getUserName());
+            session = TwitterCore.getInstance().getSessionManager().getActiveSession();
+            return twitter.showUser(session.getUserName());
         } catch (TwitterException te) {
             te.printStackTrace();
             System.out.println("Failed to get user info: " + te.getMessage());
@@ -276,9 +277,11 @@ public class GetData
      */
     public int fetchData(boolean db, Context context){
         dataSource = new DataSource(context);
-        if(db)
+        if(db) {
+            session = TwitterCore.getInstance().getSessionManager().getActiveSession();
             return fetchFromDB();
-        else{
+        }else{
+            session = TwitterCore.getInstance().getSessionManager().getActiveSession();
             if(!new Conectivity(context).hayConexion())
                 return GetData.ERROR_NO_INTERNET;
             if(fetchFollowing() + fetchFollowers() == GetData.NO_ERROR) {
@@ -392,5 +395,6 @@ public class GetData
         notFollowingYouList.clear();
         followersList.clear();
     }
+
 }
 
